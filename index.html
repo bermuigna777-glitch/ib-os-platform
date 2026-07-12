@@ -1,176 +1,380 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ignacio Bermúdez Solutions</title>
+    <meta name="description" content="Estudio de escritura, edición, inteligencia artificial y soluciones digitales.">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Inter:wght@400;600;800&display=swap');
 
-        * { scroll-behavior: smooth; }
+        /* ── Variables de tema ── */
+        :root {
+            --bg:           #050505;
+            --bg-2:         #0a0a0a;
+            --bg-3:         #111111;
+            --text:         #e5e5e5;
+            --text-muted:   #71717a;
+            --text-subtle:  #3f3f3f;
+            --border:       #1a1a1a;
+            --border-2:     #2e2e2e;
+            --red:          #dc2626;
+            --red-dim:      rgba(220,38,38,0.10);
+            --grad-start:   #ffffff;
+            --grad-end:     #666666;
+            --cursor-color: #dc2626;
+        }
+
+        [data-theme="light"] {
+            --bg:           #f4f1eb;
+            --bg-2:         #ece8e0;
+            --bg-3:         #e0dbd2;
+            --text:         #1a1a1a;
+            --text-muted:   #6b6460;
+            --text-subtle:  #b0a898;
+            --border:       #d8d2c8;
+            --border-2:     #bdb6aa;
+            --red:          #b91c1c;
+            --red-dim:      rgba(185,28,28,0.08);
+            --grad-start:   #1a1a1a;
+            --grad-end:     #888888;
+            --cursor-color: #b91c1c;
+        }
+
+        * { scroll-behavior: smooth; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #050505;
-            color: #e5e5e5;
+            background-color: var(--bg);
+            color: var(--text);
+            transition: background-color 0.4s ease, color 0.4s ease;
+            cursor: none;
+            overflow-x: hidden;
         }
 
         .mono { font-family: 'Fira Code', monospace; }
 
         .gradient-text {
-            background: linear-gradient(90deg, #fff, #666);
+            background: linear-gradient(90deg, var(--grad-start), var(--grad-end));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-        }
-
-        .terminal-box {
-            border: 1px solid #222;
-            background: rgba(10, 10, 10, 0.8);
+            background-clip: text;
         }
 
         .section-line {
-            width: 40px;
-            height: 1px;
-            background: #dc2626;
+            width: 40px; height: 1px;
+            background: var(--red);
             display: inline-block;
             vertical-align: middle;
             margin-right: 12px;
         }
 
-        .fade-in {
-            animation: fadeIn 0.8s ease-in forwards;
+        /* ── Cursor personalizado ── */
+        #cursor-dot {
+            width: 6px; height: 6px;
+            background: var(--cursor-color);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.05s, opacity 0.3s;
         }
+        #cursor-ring {
+            width: 32px; height: 32px;
+            border: 1px solid var(--cursor-color);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, border-color 0.2s, opacity 0.3s;
+            opacity: 0.5;
+        }
+        a:hover ~ #cursor-ring,
+        button:hover ~ #cursor-ring { width: 48px; height: 48px; opacity: 0.8; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to   { opacity: 1; transform: translateY(0); }
+        /* ── Transición de página ── */
+        #page-transition {
+            position: fixed; inset: 0;
+            background: var(--red);
+            z-index: 9000;
+            transform: scaleX(0);
+            transform-origin: left;
+            pointer-events: none;
+        }
+        #page-transition.enter  { animation: swipeIn  0.35s cubic-bezier(0.7,0,0.3,1) forwards; }
+        #page-transition.exit   { animation: swipeOut 0.35s cubic-bezier(0.7,0,0.3,1) forwards; }
+        @keyframes swipeIn  { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+        @keyframes swipeOut { from { transform: scaleX(1); } to { transform: scaleX(0); transform-origin: right; } }
+
+        /* ── Animaciones al hacer scroll ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-left  { opacity: 0; transform: translateX(-24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal-right { opacity: 0; transform: translateX( 24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal-left.visible, .reveal-right.visible { opacity: 1; transform: translateX(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        /* ── Bordes con tema ── */
+        .border-theme   { border-color: var(--border); }
+        .border-theme-2 { border-color: var(--border-2); }
+
+        /* ── Cards ── */
+        .card {
+            border: 1px solid var(--border);
+            background: var(--bg-2);
+            transition: border-color 0.2s, background 0.2s, transform 0.2s;
+        }
+        .card:hover {
+            border-color: var(--border-2);
+            background: var(--bg-3);
+            transform: translateY(-2px);
         }
 
         /* ── Acordeón ── */
         .accordion-body {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-                        opacity 0.4s ease;
-            opacity: 0;
+            max-height: 0; overflow: hidden; opacity: 0;
+            transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease;
         }
-
-        .accordion-body.open {
-            opacity: 1;
-        }
+        .accordion-body.open { opacity: 1; }
 
         .accordion-toggle {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            border: 1px solid #333;
+            display: inline-flex; align-items: center; gap: 10px;
+            cursor: none; border: 1px solid var(--border-2);
             padding: 8px 16px;
             transition: border-color 0.2s, color 0.2s;
-            background: none;
-            color: #71717a;
+            background: none; color: var(--text-muted);
         }
-
-        .accordion-toggle:hover {
-            border-color: #fff;
-            color: #fff;
-        }
-
+        .accordion-toggle:hover { border-color: var(--text); color: var(--text); }
         .accordion-toggle .toggle-icon {
-            display: inline-block;
-            width: 14px;
-            text-align: center;
-            transition: transform 0.3s ease;
-            font-style: normal;
+            display: inline-block; width: 14px; text-align: center;
+            transition: transform 0.3s ease; font-style: normal;
+        }
+        .accordion-toggle.active { border-color: var(--red); color: var(--text); }
+        .accordion-toggle.active .toggle-icon { transform: rotate(45deg); }
+
+        /* ── Typewriter cursor ── */
+        .tw-cursor {
+            display: inline-block; width: 3px; height: 0.85em;
+            background: var(--red); vertical-align: middle;
+            animation: blink 0.8s step-end infinite;
+        }
+        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0; } }
+
+        /* ── Parallax hero ── */
+        .parallax-layer { will-change: transform; }
+
+        /* ── Terminal interactiva ── */
+        .terminal-window {
+            border: 1px solid var(--border-2);
+            background: var(--bg-2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .terminal-titlebar {
+            background: var(--bg-3);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .terminal-btn {
+            width: 10px; height: 10px; border-radius: 50%;
+        }
+        .terminal-output {
+            padding: 20px;
+            min-height: 260px;
+            max-height: 340px;
+            overflow-y: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--text-muted);
+        }
+        .terminal-output .t-cmd  { color: var(--text); }
+        .terminal-output .t-res  { color: var(--text-muted); }
+        .terminal-output .t-red  { color: var(--red); }
+        .terminal-output .t-dim  { color: var(--text-subtle); }
+        .terminal-input-row {
+            display: flex; align-items: center; gap: 8px;
+            border-top: 1px solid var(--border);
+            padding: 12px 20px;
+        }
+        .terminal-prompt { color: var(--red); font-family: 'Fira Code', monospace; font-size: 12px; }
+        #terminal-input {
+            background: none; border: none; outline: none;
+            color: var(--text); font-family: 'Fira Code', monospace; font-size: 12px;
+            flex: 1; cursor: none;
         }
 
-        .accordion-toggle.active {
-            border-color: #dc2626;
-            color: #e5e5e5;
+        /* ── Formulario de contacto ── */
+        .form-field {
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+            padding: 12px 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
         }
+        .form-field:focus    { border-color: var(--border-2); }
+        .form-field::placeholder { color: var(--text-subtle); }
 
-        .accordion-toggle.active .toggle-icon {
-            transform: rotate(45deg);
+        .form-btn {
+            background: var(--red);
+            color: #fff;
+            border: none;
+            padding: 12px 32px;
+            font-family: 'Fira Code', monospace;
+            font-size: 11px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: none;
+            transition: opacity 0.2s, transform 0.15s;
         }
+        .form-btn:hover   { opacity: 0.85; transform: translateY(-1px); }
+        .form-btn:active  { transform: translateY(0); }
+        .form-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* ── Pilares ── */
+        /* ── Theme toggle ── */
+        #theme-toggle {
+            background: none; border: 1px solid var(--border-2);
+            color: var(--text-muted); cursor: none;
+            padding: 4px 10px; transition: border-color 0.2s, color 0.2s;
+            font-family: 'Fira Code', monospace; font-size: 10px;
+        }
+        #theme-toggle:hover { border-color: var(--text); color: var(--text); }
+
+        /* ── Pilar cards ── */
         .pilar-card {
-            border: 1px solid #1a1a1a;
-            padding: 28px;
+            border: 1px solid var(--border);
+            padding: 24px;
+            background: var(--bg);
             transition: border-color 0.2s, background 0.2s;
         }
+        .pilar-card:hover { border-color: var(--border-2); background: var(--bg-2); }
 
-        .pilar-card:hover {
-            border-color: #3f3f3f;
-            background: #0a0a0a;
+        /* ── Nav links ── */
+        .nav-link { color: var(--text-muted); transition: color 0.2s; }
+        .nav-link:hover { color: var(--text); }
+
+        /* ── Success message ── */
+        #form-success {
+            display: none;
+            background: var(--red-dim);
+            border: 1px solid var(--red);
+            padding: 16px;
+            color: var(--text);
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
 
-    <!-- NAV -->
-    <nav class="fixed top-0 left-0 right-0 z-50 border-b border-zinc-900 bg-[#050505]/90 backdrop-blur-sm">
-        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-            <span class="text-sm font-extrabold tracking-tight gradient-text">Ignacio Bermúdez Solutions</span>
-            <div class="mono text-[10px] space-x-6 uppercase tracking-widest text-zinc-400 hidden md:flex">
-                <a href="#inicio"    class="hover:text-white transition-colors">Inicio</a>
-                <a href="#quienes"   class="hover:text-white transition-colors">Quiénes somos</a>
-                <a href="#servicios" class="hover:text-white transition-colors">Servicios</a>
-                <a href="#proyectos"   class="hover:text-white transition-colors">Proyectos</a>
-                <a href="articulos.html" class="hover:text-white transition-colors">Artículos</a>
-                <a href="#archivo"   class="hover:text-white transition-colors">Contacto</a>
+    <!-- Cursor -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- Transición de página -->
+    <div id="page-transition"></div>
+
+    <!-- ─── NAV ─── -->
+    <nav style="border-bottom:1px solid var(--border);"
+         class="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm"
+         style="background: color-mix(in srgb, var(--bg) 90%, transparent);">
+        <div style="background: color-mix(in srgb, var(--bg) 88%, transparent);"
+             class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-sm font-extrabold tracking-tight gradient-text nav-transition-link">
+                Ignacio Bermúdez Solutions
+            </a>
+            <div class="flex items-center gap-6">
+                <div class="mono text-[10px] space-x-5 uppercase tracking-widest hidden md:flex">
+                    <a href="#inicio"    class="nav-link nav-transition-link">Inicio</a>
+                    <a href="#quienes"   class="nav-link nav-transition-link">Quiénes</a>
+                    <a href="#servicios" class="nav-link nav-transition-link">Servicios</a>
+                    <a href="#proyectos" class="nav-link nav-transition-link">Proyectos</a>
+                    <a href="#terminal"  class="nav-link nav-transition-link">Terminal</a>
+                    <a href="articulos.html" class="nav-link nav-transition-link">Artículos</a>
+                    <a href="#contacto"  class="nav-link nav-transition-link">Contacto</a>
+                </div>
+                <button id="theme-toggle" aria-label="Cambiar tema">◐</button>
             </div>
         </div>
     </nav>
 
     <!-- ═══════════════════════════════════════════════════
-         SECCIÓN 1 — INICIO / HERO
+         SECCIÓN 1 — HERO
     ═══════════════════════════════════════════════════ -->
-    <section id="inicio" class="min-h-screen flex flex-col justify-center max-w-5xl mx-auto px-6 pt-24 pb-20">
+    <section id="inicio" class="min-h-screen flex flex-col justify-center max-w-5xl mx-auto px-6 pt-24 pb-20 relative overflow-hidden">
 
-        <div class="fade-in">
-            <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-6">
+        <!-- Parallax background grid -->
+        <div class="parallax-layer absolute inset-0 pointer-events-none opacity-[0.03]"
+             id="parallax-grid"
+             style="background-image: linear-gradient(var(--border-2) 1px, transparent 1px), linear-gradient(90deg, var(--border-2) 1px, transparent 1px); background-size: 60px 60px;">
+        </div>
+
+        <div class="relative z-10">
+            <p class="mono text-[10px] reveal mb-6" style="color:var(--red);">
                 <span class="section-line"></span>Estudio digital — Mendoza / Florencia
             </p>
 
-            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tighter gradient-text leading-tight mb-8">
-                Escritura, IA<br/>y soluciones<br/>digitales.
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter leading-tight mb-8" style="color:var(--text);">
+                <span id="typewriter-text" class="gradient-text"></span><span class="tw-cursor" id="tw-cursor"></span>
             </h1>
 
-            <p class="text-zinc-400 text-lg max-w-xl leading-relaxed mb-10">
+            <p class="text-lg max-w-xl leading-relaxed mb-10 reveal reveal-delay-2" style="color:var(--text-muted);">
                 Ayudamos a personas, profesionales y organizaciones a comunicar mejor,
                 ordenar ideas y crear herramientas útiles.
             </p>
 
-            <div class="flex flex-wrap gap-4">
+            <div class="flex flex-wrap gap-4 reveal reveal-delay-3">
                 <a href="#servicios"
-                   class="mono text-xs uppercase tracking-widest border border-zinc-700 px-6 py-3 hover:border-white hover:text-white transition-all">
+                   class="mono text-xs uppercase tracking-widest px-6 py-3 nav-transition-link"
+                   style="border:1px solid var(--border-2); color:var(--text-muted); transition: border-color 0.2s, color 0.2s;"
+                   onmouseover="this.style.borderColor='var(--text)';this.style.color='var(--text)'"
+                   onmouseout="this.style.borderColor='var(--border-2)';this.style.color='var(--text-muted)'">
                     Ver servicios
                 </a>
-                <a href="#archivo"
-                   class="mono text-xs uppercase tracking-widest bg-white text-black px-6 py-3 hover:bg-zinc-200 transition-colors">
+                <a href="#contacto"
+                   class="mono text-xs uppercase tracking-widest px-6 py-3 nav-transition-link"
+                   style="background:var(--red); color:#fff; transition: opacity 0.2s;"
+                   onmouseover="this.style.opacity='0.85'"
+                   onmouseout="this.style.opacity='1'">
                     Contactar
                 </a>
             </div>
         </div>
 
-        <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-zinc-900 pt-10">
-            <div>
-                <p class="mono text-2xl font-bold text-white">7+</p>
-                <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Libros publicados</p>
+        <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 pt-10 relative z-10"
+             style="border-top:1px solid var(--border);">
+            <div class="reveal reveal-delay-1">
+                <p class="mono text-2xl font-bold" style="color:var(--text);" data-counter="7">0</p>
+                <p class="mono text-[10px] uppercase tracking-widest mt-1" style="color:var(--text-muted);">Libros publicados</p>
             </div>
-            <div>
-                <p class="mono text-2xl font-bold text-white">3</p>
-                <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Países de operación</p>
+            <div class="reveal reveal-delay-2">
+                <p class="mono text-2xl font-bold" style="color:var(--text);" data-counter="3">0</p>
+                <p class="mono text-[10px] uppercase tracking-widest mt-1" style="color:var(--text-muted);">Países de operación</p>
             </div>
-            <div>
-                <p class="mono text-2xl font-bold text-white">IA</p>
-                <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Anthropic / Claude</p>
+            <div class="reveal reveal-delay-3">
+                <p class="mono text-2xl font-bold" style="color:var(--text);">IA</p>
+                <p class="mono text-[10px] uppercase tracking-widest mt-1" style="color:var(--text-muted);">Anthropic / Claude</p>
             </div>
-            <div>
-                <p class="mono text-2xl font-bold text-white">01</p>
-                <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Plataforma de salud</p>
+            <div class="reveal reveal-delay-4">
+                <p class="mono text-2xl font-bold" style="color:var(--text);" data-counter="1">0</p>
+                <p class="mono text-[10px] uppercase tracking-widest mt-1" style="color:var(--text-muted);">Plataforma de salud</p>
             </div>
         </div>
 
@@ -179,43 +383,39 @@
     <!-- ═══════════════════════════════════════════════════
          SECCIÓN 2 — QUIÉNES SOMOS
     ═══════════════════════════════════════════════════ -->
-    <section id="quienes" class="max-w-5xl mx-auto px-6 py-20 border-t border-zinc-900">
+    <section id="quienes" class="max-w-5xl mx-auto px-6 py-20" style="border-top:1px solid var(--border);">
 
-        <!-- Intro siempre visible -->
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-8">
-            <div>
-                <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-4">
+            <div class="reveal">
+                <p class="mono text-[10px] uppercase tracking-widest mb-4" style="color:var(--red);">
                     <span class="section-line"></span>// quiénes somos
                 </p>
                 <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase">
-                    Ignacio Bermúdez<br/>Soluciones
+                    Ignacio Bermúdez<br/>Solutions
                 </h2>
-                <p class="text-zinc-400 text-base mt-4 max-w-xl leading-relaxed">
+                <p class="text-base mt-4 max-w-xl leading-relaxed" style="color:var(--text-muted);">
                     Un estudio de escritura, edición, inteligencia artificial y soluciones digitales.
                 </p>
             </div>
-            <button class="accordion-toggle mono text-[10px] uppercase tracking-widest self-start md:self-end"
+            <button class="accordion-toggle mono text-[10px] uppercase tracking-widest self-start md:self-end reveal"
                     data-target="quienes-body">
                 <i class="toggle-icon">+</i> Conocernos
             </button>
         </div>
 
-        <!-- Contenido expandible -->
         <div id="quienes-body" class="accordion-body">
             <div class="pt-10 space-y-16">
-
-                <!-- Párrafos principales -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <div class="space-y-6 text-zinc-300 leading-relaxed text-base">
-                        <p>
+                    <div class="space-y-6 leading-relaxed text-base reveal-left">
+                        <p style="color:var(--text);">
                             Ayudamos a personas, profesionales y organizaciones a
-                            <span class="text-white font-semibold">comunicar mejor, ordenar ideas y crear herramientas útiles.</span>
+                            <strong style="color:var(--text);">comunicar mejor, ordenar ideas y crear herramientas útiles.</strong>
                         </p>
-                        <p class="text-zinc-400">
+                        <p style="color:var(--text-muted);">
                             Trabajamos con corrección literaria, ghostwriting, copywriting, biografías,
                             prompts de IA, textos para páginas web y automatización de procesos.
                         </p>
-                        <p class="text-zinc-400">
+                        <p style="color:var(--text-muted);">
                             También desarrollamos una plataforma digital de salud y acompañamiento
                             para personas en recuperación de consumos problemáticos, pensada para
                             registrar avances, organizar rutinas, sostener hábitos y facilitar un
@@ -223,41 +423,38 @@
                         </p>
                     </div>
 
-                    <div class="space-y-4">
-                        <!-- Los cuatro pilares -->
-                        <p class="mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">Cómo trabajamos</p>
-                        <div class="pilar-card">
-                            <p class="mono text-[10px] text-red-600 mb-2">01 /</p>
-                            <h4 class="text-white font-semibold mb-1">Criterio editorial</h4>
-                            <p class="text-zinc-500 text-sm">Precisión en el lenguaje. Cada palabra tiene un propósito.</p>
+                    <div class="space-y-3 reveal-right">
+                        <p class="mono text-[10px] uppercase tracking-widest mb-4" style="color:var(--text-subtle);">Cómo trabajamos</p>
+                        <div class="pilar-card reveal reveal-delay-1">
+                            <p class="mono text-[9px] mb-2" style="color:var(--red);">01 /</p>
+                            <h4 class="font-semibold mb-1" style="color:var(--text);">Criterio editorial</h4>
+                            <p class="text-sm" style="color:var(--text-muted);">Precisión en el lenguaje. Cada palabra tiene un propósito.</p>
                         </div>
-                        <div class="pilar-card">
-                            <p class="mono text-[10px] text-red-600 mb-2">02 /</p>
-                            <h4 class="text-white font-semibold mb-1">Claridad estratégica</h4>
-                            <p class="text-zinc-500 text-sm">Ideas complejas convertidas en mensajes que funcionan.</p>
+                        <div class="pilar-card reveal reveal-delay-2">
+                            <p class="mono text-[9px] mb-2" style="color:var(--red);">02 /</p>
+                            <h4 class="font-semibold mb-1" style="color:var(--text);">Claridad estratégica</h4>
+                            <p class="text-sm" style="color:var(--text-muted);">Ideas complejas convertidas en mensajes que funcionan.</p>
                         </div>
-                        <div class="pilar-card">
-                            <p class="mono text-[10px] text-red-600 mb-2">03 /</p>
-                            <h4 class="text-white font-semibold mb-1">Sensibilidad humana</h4>
-                            <p class="text-zinc-500 text-sm">Escuchamos antes de escribir o construir.</p>
+                        <div class="pilar-card reveal reveal-delay-3">
+                            <p class="mono text-[9px] mb-2" style="color:var(--red);">03 /</p>
+                            <h4 class="font-semibold mb-1" style="color:var(--text);">Sensibilidad humana</h4>
+                            <p class="text-sm" style="color:var(--text-muted);">Escuchamos antes de escribir o construir.</p>
                         </div>
-                        <div class="pilar-card">
-                            <p class="mono text-[10px] text-red-600 mb-2">04 /</p>
-                            <h4 class="text-white font-semibold mb-1">Tecnología práctica</h4>
-                            <p class="text-zinc-500 text-sm">IA y automatización al servicio de resultados reales.</p>
+                        <div class="pilar-card reveal reveal-delay-4">
+                            <p class="mono text-[9px] mb-2" style="color:var(--red);">04 /</p>
+                            <h4 class="font-semibold mb-1" style="color:var(--text);">Tecnología práctica</h4>
+                            <p class="text-sm" style="color:var(--text-muted);">IA y automatización al servicio de resultados reales.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Frase de cierre -->
-                <div class="border-l-2 border-red-700 pl-6 max-w-2xl">
-                    <p class="text-zinc-300 text-lg leading-relaxed italic">
+                <div class="pl-6 max-w-2xl reveal" style="border-left:2px solid var(--red);">
+                    <p class="text-lg leading-relaxed italic" style="color:var(--text-muted);">
                         "Combinamos criterio editorial, claridad estratégica, sensibilidad humana
                         y tecnología práctica para transformar ideas complejas en textos, sistemas
                         y soluciones que funcionen."
                     </p>
                 </div>
-
             </div>
         </div>
 
@@ -266,124 +463,89 @@
     <!-- ═══════════════════════════════════════════════════
          SECCIÓN 3 — SERVICIOS
     ═══════════════════════════════════════════════════ -->
-    <section id="servicios" class="max-w-5xl mx-auto px-6 py-20 border-t border-zinc-900">
+    <section id="servicios" class="max-w-5xl mx-auto px-6 py-20" style="border-top:1px solid var(--border);">
 
-        <!-- Intro siempre visible -->
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-8">
-            <div>
-                <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-4">
+            <div class="reveal">
+                <p class="mono text-[10px] uppercase tracking-widest mb-4" style="color:var(--red);">
                     <span class="section-line"></span>// servicios
                 </p>
-                <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase">
-                    Lo que hacemos.
-                </h2>
-                <p class="text-zinc-500 text-sm mt-4 max-w-lg leading-relaxed">
+                <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase">Lo que hacemos.</h2>
+                <p class="text-sm mt-4 max-w-lg leading-relaxed" style="color:var(--text-muted);">
                     Escritura, edición, IA y automatización. Cada servicio se contrata por separado
                     o como parte de un proceso integrado.
                 </p>
             </div>
-            <button class="accordion-toggle mono text-[10px] uppercase tracking-widest self-start md:self-end"
+            <button class="accordion-toggle mono text-[10px] uppercase tracking-widest self-start md:self-end reveal"
                     data-target="servicios-body">
                 <i class="toggle-icon">+</i> Ver servicios
             </button>
         </div>
 
-        <!-- Contenido expandible -->
         <div id="servicios-body" class="accordion-body">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-zinc-900 mt-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 mt-8" style="gap:1px; background:var(--border);">
 
-                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
-                    <div class="mono text-[10px] text-red-600 mb-6">01 /</div>
-                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">Ghostwriting</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed mb-5">
-                        Redactamos textos completos bajo tu firma. Libros, memorias,
-                        artículos y más. Sin crédito visible, con voz adaptada a la tuya.
-                    </p>
-                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                        <li>> Libros y memorias</li>
-                        <li>> Artículos de opinión</li>
-                        <li>> Contenido profesional</li>
+                <div class="card p-8 reveal reveal-delay-1">
+                    <div class="mono text-[10px] mb-6" style="color:var(--red);">01 /</div>
+                    <h3 class="text-lg font-bold mb-3 uppercase tracking-tight" style="color:var(--text);">Ghostwriting</h3>
+                    <p class="text-sm leading-relaxed mb-5" style="color:var(--text-muted);">Redactamos textos completos bajo tu firma. Sin crédito visible, con voz adaptada a la tuya.</p>
+                    <ul class="mono text-[10px] space-y-2" style="color:var(--text-subtle);">
+                        <li>> Libros y memorias</li><li>> Artículos de opinión</li><li>> Contenido profesional</li>
                     </ul>
                 </div>
 
-                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
-                    <div class="mono text-[10px] text-red-600 mb-6">02 /</div>
-                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">Corrección literaria</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed mb-5">
-                        Revisión de estilo, gramática, coherencia y estructura
-                        para manuscritos listos para publicar.
-                    </p>
-                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                        <li>> Corrección de estilo</li>
-                        <li>> Edición de manuscritos</li>
-                        <li>> Revisión de estructura</li>
+                <div class="card p-8 reveal reveal-delay-2">
+                    <div class="mono text-[10px] mb-6" style="color:var(--red);">02 /</div>
+                    <h3 class="text-lg font-bold mb-3 uppercase tracking-tight" style="color:var(--text);">Corrección literaria</h3>
+                    <p class="text-sm leading-relaxed mb-5" style="color:var(--text-muted);">Revisión de estilo, gramática, coherencia y estructura para manuscritos listos para publicar.</p>
+                    <ul class="mono text-[10px] space-y-2" style="color:var(--text-subtle);">
+                        <li>> Corrección de estilo</li><li>> Edición de manuscritos</li><li>> Revisión de estructura</li>
                     </ul>
                 </div>
 
-                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
-                    <div class="mono text-[10px] text-red-600 mb-6">03 /</div>
-                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">Copywriting</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed mb-5">
-                        Textos para webs, landing pages, redes sociales y campañas.
-                        Claro, directo y pensado para convertir.
-                    </p>
-                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                        <li>> Textos web y landing pages</li>
-                        <li>> Redes sociales</li>
-                        <li>> Email marketing</li>
+                <div class="card p-8 reveal reveal-delay-3">
+                    <div class="mono text-[10px] mb-6" style="color:var(--red);">03 /</div>
+                    <h3 class="text-lg font-bold mb-3 uppercase tracking-tight" style="color:var(--text);">Copywriting</h3>
+                    <p class="text-sm leading-relaxed mb-5" style="color:var(--text-muted);">Textos para webs, landing pages, redes sociales y campañas. Claro, directo y pensado para convertir.</p>
+                    <ul class="mono text-[10px] space-y-2" style="color:var(--text-subtle);">
+                        <li>> Textos web</li><li>> Redes sociales</li><li>> Email marketing</li>
                     </ul>
                 </div>
 
-                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
-                    <div class="mono text-[10px] text-red-600 mb-6">04 /</div>
-                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">Biografías</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed mb-5">
-                        Construimos narrativas de vida y trayectoria profesional
-                        para personas, emprendedores y organizaciones.
-                    </p>
-                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                        <li>> Biogafías personales</li>
-                        <li>> Perfiles profesionales</li>
-                        <li>> Historia de marca</li>
+                <div class="card p-8 reveal reveal-delay-1">
+                    <div class="mono text-[10px] mb-6" style="color:var(--red);">04 /</div>
+                    <h3 class="text-lg font-bold mb-3 uppercase tracking-tight" style="color:var(--text);">Biografías</h3>
+                    <p class="text-sm leading-relaxed mb-5" style="color:var(--text-muted);">Narrativas de vida y trayectoria profesional para personas, emprendedores y organizaciones.</p>
+                    <ul class="mono text-[10px] space-y-2" style="color:var(--text-subtle);">
+                        <li>> Biografías personales</li><li>> Perfiles profesionales</li><li>> Historia de marca</li>
                     </ul>
                 </div>
 
-                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
-                    <div class="mono text-[10px] text-red-600 mb-6">05 /</div>
-                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">Prompts IA</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed mb-5">
-                        Diseñamos instrucciones y flujos para modelos de lenguaje como Claude,
-                        adaptados a tu proceso de trabajo o negocio.
-                    </p>
-                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                        <li>> Prompts para Claude / GPT</li>
-                        <li>> Flujos de trabajo con IA</li>
-                        <li>> Asistentes personalizados</li>
+                <div class="card p-8 reveal reveal-delay-2">
+                    <div class="mono text-[10px] mb-6" style="color:var(--red);">05 /</div>
+                    <h3 class="text-lg font-bold mb-3 uppercase tracking-tight" style="color:var(--text);">Prompts IA</h3>
+                    <p class="text-sm leading-relaxed mb-5" style="color:var(--text-muted);">Instrucciones y flujos para modelos de lenguaje como Claude, adaptados a tu proceso o negocio.</p>
+                    <ul class="mono text-[10px] space-y-2" style="color:var(--text-subtle);">
+                        <li>> Prompts para Claude / GPT</li><li>> Flujos con IA</li><li>> Asistentes custom</li>
                     </ul>
                 </div>
 
-                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
-                    <div class="mono text-[10px] text-red-600 mb-6">06 /</div>
-                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">Automatización</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed mb-5">
-                        Identificamos procesos repetitivos y los automatizamos con herramientas
-                        digitales, IA y código. Más tiempo, menos fricción.
-                    </p>
-                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                        <li>> Automatización de tareas</li>
-                        <li>> Integración de herramientas</li>
-                        <li>> Flujos con n8n / Make / API</li>
+                <div class="card p-8 reveal reveal-delay-3">
+                    <div class="mono text-[10px] mb-6" style="color:var(--red);">06 /</div>
+                    <h3 class="text-lg font-bold mb-3 uppercase tracking-tight" style="color:var(--text);">Automatización</h3>
+                    <p class="text-sm leading-relaxed mb-5" style="color:var(--text-muted);">Procesos repetitivos automatizados con herramientas digitales, IA y código.</p>
+                    <ul class="mono text-[10px] space-y-2" style="color:var(--text-subtle);">
+                        <li>> Automatización de tareas</li><li>> Integración de herramientas</li><li>> n8n / Make / API</li>
                     </ul>
                 </div>
 
-                <!-- CTA -->
-                <div class="bg-zinc-950 p-8 flex flex-col justify-between border border-zinc-800 md:col-span-3">
+                <div class="p-8 md:col-span-3 reveal" style="background:var(--bg-3); border:1px solid var(--border-2);">
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                        <p class="text-zinc-400 text-sm">
-                            ¿No sabés qué servicio necesitás? Contanos tu proyecto y lo definimos juntos.
-                        </p>
-                        <a href="mailto:ignacio@ib-os.com"
-                           class="mono text-xs uppercase tracking-widest border border-zinc-600 px-6 py-3 text-center hover:border-white hover:text-white transition-all whitespace-nowrap">
+                        <p class="text-sm" style="color:var(--text-muted);">¿No sabés qué servicio necesitás? Contanos tu proyecto y lo definimos juntos.</p>
+                        <a href="#contacto" class="mono text-xs uppercase tracking-widest px-6 py-3 text-center whitespace-nowrap nav-transition-link"
+                           style="border:1px solid var(--border-2); color:var(--text-muted); transition:border-color 0.2s,color 0.2s;"
+                           onmouseover="this.style.borderColor='var(--text)';this.style.color='var(--text)'"
+                           onmouseout="this.style.borderColor='var(--border-2)';this.style.color='var(--text-muted)'">
                             Escribinos &rarr;
                         </a>
                     </div>
@@ -395,55 +557,48 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════
-         SECCIÓN 4 — PROYECTOS EN DESARROLLO
+         SECCIÓN 4 — PROYECTOS
     ═══════════════════════════════════════════════════ -->
-    <section id="proyectos" class="max-w-5xl mx-auto px-6 py-20 border-t border-zinc-900">
+    <section id="proyectos" class="max-w-5xl mx-auto px-6 py-20" style="border-top:1px solid var(--border);">
 
-        <!-- Intro siempre visible -->
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-8">
-            <div>
-                <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-4">
+            <div class="reveal">
+                <p class="mono text-[10px] uppercase tracking-widest mb-4" style="color:var(--red);">
                     <span class="section-line"></span>// proyectos en desarrollo
                 </p>
-                <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase">
-                    Plataformas<br/>propias.
-                </h2>
-                <p class="text-zinc-500 text-sm mt-4 max-w-lg leading-relaxed">
-                    Además de los servicios al cliente, desarrollamos tres plataformas digitales propias.
+                <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase">Plataformas<br/>propias.</h2>
+                <p class="text-sm mt-4 max-w-lg leading-relaxed" style="color:var(--text-muted);">
+                    Tres plataformas digitales propias en desarrollo simultáneo.
                 </p>
             </div>
-            <button class="accordion-toggle mono text-[10px] uppercase tracking-widest self-start md:self-end"
+            <button class="accordion-toggle mono text-[10px] uppercase tracking-widest self-start md:self-end reveal"
                     data-target="proyectos-body">
                 <i class="toggle-icon">+</i> Ver proyectos
             </button>
         </div>
 
-        <!-- Contenido expandible -->
         <div id="proyectos-body" class="accordion-body">
             <div class="space-y-4 pt-8">
 
-                <!-- Recovery OS -->
-                <div class="terminal-box p-8 rounded-sm">
+                <div class="card p-8 reveal">
                     <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
                         <div class="flex-1">
                             <div class="flex items-center gap-4 mb-4">
-                                <span class="mono text-[10px] text-red-600">06 /</span>
-                                <h3 class="text-xl font-bold text-white uppercase tracking-tight">Recovery OS</h3>
-                                <span class="mono text-[10px] text-yellow-500 border border-yellow-800 px-2 py-0.5">EN DESARROLLO</span>
+                                <span class="mono text-[10px]" style="color:var(--red);">06 /</span>
+                                <h3 class="text-xl font-bold uppercase tracking-tight" style="color:var(--text);">Recovery OS</h3>
+                                <span class="mono text-[9px] px-2 py-0.5" style="color:#d97706;border:1px solid #92400e;">EN DESARROLLO</span>
                             </div>
-                            <p class="text-zinc-400 text-sm leading-relaxed max-w-xl mb-4">
-                                Plataforma digital de salud y acompañamiento para personas en recuperación
-                                de consumos problemáticos. Pensada para registrar avances, organizar rutinas,
-                                sostener hábitos y facilitar un seguimiento claro del proceso.
+                            <p class="text-sm leading-relaxed max-w-xl mb-4" style="color:var(--text-muted);">
+                                Plataforma digital de salud y acompañamiento para personas en recuperación de consumos problemáticos.
                             </p>
-                            <ul class="mono text-[10px] text-zinc-600 space-y-1">
-                                <li>> Registro diario de estado y avances</li>
+                            <ul class="mono text-[10px] space-y-1" style="color:var(--text-subtle);">
+                                <li>> Registro diario de avances</li>
                                 <li>> Organización de rutinas y hábitos</li>
                                 <li>> Seguimiento clínico claro</li>
                                 <li>> Red de soporte y acompañamiento</li>
                             </ul>
                         </div>
-                        <div class="mono text-[10px] text-zinc-700 space-y-1 text-right shrink-0">
+                        <div class="mono text-[10px] space-y-1 text-right shrink-0" style="color:var(--text-subtle);">
                             <p>STACK: Python / FastAPI</p>
                             <p>TARGET: Profesionales de salud</p>
                             <p>MODELO: SaaS</p>
@@ -451,28 +606,25 @@
                     </div>
                 </div>
 
-                <!-- IA Aplicada -->
-                <div class="terminal-box p-8 rounded-sm">
+                <div class="card p-8 reveal reveal-delay-1">
                     <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
                         <div class="flex-1">
                             <div class="flex items-center gap-4 mb-4">
-                                <span class="mono text-[10px] text-red-600">07 /</span>
-                                <h3 class="text-xl font-bold text-white uppercase tracking-tight">IA Aplicada</h3>
-                                <span class="mono text-[10px] text-yellow-500 border border-yellow-800 px-2 py-0.5">EN DESARROLLO</span>
+                                <span class="mono text-[10px]" style="color:var(--red);">07 /</span>
+                                <h3 class="text-xl font-bold uppercase tracking-tight" style="color:var(--text);">IA Aplicada</h3>
+                                <span class="mono text-[9px] px-2 py-0.5" style="color:#d97706;border:1px solid #92400e;">EN DESARROLLO</span>
                             </div>
-                            <p class="text-zinc-400 text-sm leading-relaxed max-w-xl mb-4">
-                                Herramientas cognitivas basadas en la ciencia de modelos de lenguaje
-                                de Anthropic. Asistentes, flujos de trabajo y pipelines de contenido
-                                adaptados a procesos editoriales, clínicos y de negocio.
+                            <p class="text-sm leading-relaxed max-w-xl mb-4" style="color:var(--text-muted);">
+                                Herramientas cognitivas basadas en Anthropic. Asistentes, flujos y pipelines de contenido para procesos editoriales, clínicos y de negocio.
                             </p>
-                            <ul class="mono text-[10px] text-zinc-600 space-y-1">
+                            <ul class="mono text-[10px] space-y-1" style="color:var(--text-subtle);">
                                 <li>> Agentes de escritura y edición</li>
                                 <li>> Automatización con Claude API</li>
                                 <li>> Análisis y clasificación de textos</li>
                                 <li>> Asistentes personalizados por sector</li>
                             </ul>
                         </div>
-                        <div class="mono text-[10px] text-zinc-700 space-y-1 text-right shrink-0">
+                        <div class="mono text-[10px] space-y-1 text-right shrink-0" style="color:var(--text-subtle);">
                             <p>STACK: Claude / Anthropic API</p>
                             <p>TARGET: Profesionales y empresas</p>
                             <p>MODELO: B2B / SaaS</p>
@@ -480,28 +632,25 @@
                     </div>
                 </div>
 
-                <!-- Nómade Agency -->
-                <div class="terminal-box p-8 rounded-sm">
+                <div class="card p-8 reveal reveal-delay-2">
                     <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
                         <div class="flex-1">
                             <div class="flex items-center gap-4 mb-4">
-                                <span class="mono text-[10px] text-red-600">08 /</span>
-                                <h3 class="text-xl font-bold text-white uppercase tracking-tight">Nómade Agency</h3>
-                                <span class="mono text-[10px] text-yellow-500 border border-yellow-800 px-2 py-0.5">EN DESARROLLO</span>
+                                <span class="mono text-[10px]" style="color:var(--red);">08 /</span>
+                                <h3 class="text-xl font-bold uppercase tracking-tight" style="color:var(--text);">Nómade Agency</h3>
+                                <span class="mono text-[9px] px-2 py-0.5" style="color:#d97706;border:1px solid #92400e;">EN DESARROLLO</span>
                             </div>
-                            <p class="text-zinc-400 text-sm leading-relaxed max-w-xl mb-4">
-                                Sistema de construcción y operación de agencias remotas para el viajero
-                                nómade digital. Infraestructura, identidad de marca y herramientas para
-                                trabajar y captar clientes desde cualquier lugar del mundo.
+                            <p class="text-sm leading-relaxed max-w-xl mb-4" style="color:var(--text-muted);">
+                                Sistema de construcción y operación de agencias remotas para el viajero nómade digital.
                             </p>
-                            <ul class="mono text-[10px] text-zinc-600 space-y-1">
+                            <ul class="mono text-[10px] space-y-1" style="color:var(--text-subtle);">
                                 <li>> Estructura operativa remota</li>
                                 <li>> Branding y posicionamiento digital</li>
                                 <li>> Stack de herramientas nómade</li>
                                 <li>> Captación de clientes globales</li>
                             </ul>
                         </div>
-                        <div class="mono text-[10px] text-zinc-700 space-y-1 text-right shrink-0">
+                        <div class="mono text-[10px] space-y-1 text-right shrink-0" style="color:var(--text-subtle);">
                             <p>STACK: No-code + IA</p>
                             <p>TARGET: Freelancers / nómades</p>
                             <p>MODELO: Comunidad + servicios</p>
@@ -515,59 +664,421 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════
-         FOOTER — CONTACTO
+         SECCIÓN 5 — TERMINAL INTERACTIVA
     ═══════════════════════════════════════════════════ -->
-    <footer id="archivo" class="max-w-5xl mx-auto px-6 border-t border-zinc-900 py-16">
-        <div class="flex flex-col md:flex-row justify-between items-start gap-10">
-            <div>
-                <h3 class="text-xl font-extrabold tracking-tight gradient-text mb-2">Ignacio Bermúdez Solutions</h3>
-                <p class="text-zinc-500 text-sm max-w-xs leading-relaxed">
-                    Escritura, edición, inteligencia artificial y soluciones digitales.
-                </p>
-                <p class="mono text-[10px] text-zinc-700 mt-4 uppercase">Mendoza, AR | Florencia, IT</p>
-            </div>
-            <div class="flex flex-col gap-3">
-                <a href="mailto:ignacio@ib-os.com"
-                   class="text-white font-semibold hover:underline">ignacio@ib-os.com</a>
-                <span class="mono text-[10px] text-zinc-600 uppercase tracking-widest">Contacto por Signal disponible</span>
-            </div>
-        </div>
-        <div class="border-t border-zinc-900 mt-10 pt-6">
-            <p class="mono text-[10px] text-zinc-700 uppercase tracking-widest">
-                © 2026 Ignacio Bermúdez Solutions
+    <section id="terminal" class="max-w-5xl mx-auto px-6 py-20" style="border-top:1px solid var(--border);">
+
+        <div class="reveal mb-10">
+            <p class="mono text-[10px] uppercase tracking-widest mb-4" style="color:var(--red);">
+                <span class="section-line"></span>// terminal
+            </p>
+            <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase">Explorar<br/>el sistema.</h2>
+            <p class="text-sm mt-4 max-w-lg leading-relaxed" style="color:var(--text-muted);">
+                Escribí un comando para navegar el estudio. Probá con <span class="mono" style="color:var(--red);">help</span>.
             </p>
         </div>
+
+        <div class="terminal-window reveal">
+            <div class="terminal-titlebar">
+                <div class="terminal-btn" style="background:#ef4444;"></div>
+                <div class="terminal-btn" style="background:#f59e0b;"></div>
+                <div class="terminal-btn" style="background:#22c55e;"></div>
+                <span class="mono text-[10px] ml-4" style="color:var(--text-subtle);">ib-solutions — terminal</span>
+            </div>
+            <div class="terminal-output" id="terminal-output">
+                <div><span class="t-red">IB_Solutions v1.0</span> — Sistema iniciado.</div>
+                <div class="t-dim">Escribí <span class="t-red">help</span> para ver los comandos disponibles.</div>
+                <div>&nbsp;</div>
+            </div>
+            <div class="terminal-input-row">
+                <span class="terminal-prompt">~$</span>
+                <input type="text" id="terminal-input" placeholder="escribí un comando..." autocomplete="off" spellcheck="false" />
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════
+         SECCIÓN 6 — CONTACTO
+    ═══════════════════════════════════════════════════ -->
+    <section id="contacto" class="max-w-5xl mx-auto px-6 py-20" style="border-top:1px solid var(--border);">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+
+            <div class="reveal-left">
+                <p class="mono text-[10px] uppercase tracking-widest mb-4" style="color:var(--red);">
+                    <span class="section-line"></span>// contacto
+                </p>
+                <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase mb-6">Hablemos.</h2>
+                <p class="text-base leading-relaxed mb-8" style="color:var(--text-muted);">
+                    Contanos en qué estás trabajando y cómo podemos ayudarte. Respondemos a todos los mensajes.
+                </p>
+                <div class="space-y-4 mono text-xs" style="color:var(--text-subtle);">
+                    <div class="flex gap-3">
+                        <span style="color:var(--red);">EMAIL</span>
+                        <a href="mailto:ignacio@ib-os.com" style="color:var(--text-muted);" class="hover:underline">ignacio@ib-os.com</a>
+                    </div>
+                    <div class="flex gap-3">
+                        <span style="color:var(--red);">SEÑAL</span>
+                        <span style="color:var(--text-muted);">Disponible por Signal</span>
+                    </div>
+                    <div class="flex gap-3">
+                        <span style="color:var(--red);">BASE</span>
+                        <span style="color:var(--text-muted);">Mendoza, AR / Florencia, IT</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal-right">
+                <!-- Reemplazá ACCESS_KEY con tu clave de web3forms.com (gratis) -->
+                <form id="contact-form" class="space-y-4">
+                    <input type="hidden" name="access_key" value="ACCESS_KEY_AQUI">
+                    <input type="hidden" name="subject" value="Nuevo mensaje desde IB Solutions">
+
+                    <div>
+                        <input type="text" name="name" placeholder="Tu nombre" required
+                               class="form-field" />
+                    </div>
+                    <div>
+                        <input type="email" name="email" placeholder="Tu email" required
+                               class="form-field" />
+                    </div>
+                    <div>
+                        <select name="servicio" class="form-field" style="cursor:none;">
+                            <option value="" disabled selected>¿Qué necesitás?</option>
+                            <option>Ghostwriting</option>
+                            <option>Corrección literaria</option>
+                            <option>Copywriting</option>
+                            <option>Biografía</option>
+                            <option>Prompts IA</option>
+                            <option>Automatización</option>
+                            <option>Otro / No sé todavía</option>
+                        </select>
+                    </div>
+                    <div>
+                        <textarea name="message" placeholder="Contanos tu proyecto..." required rows="5"
+                                  class="form-field resize-none"></textarea>
+                    </div>
+
+                    <div id="form-success">
+                        ✓ Mensaje enviado. Te respondemos pronto.
+                    </div>
+
+                    <button type="submit" class="form-btn w-full" id="form-btn">
+                        Enviar mensaje
+                    </button>
+                </form>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer class="max-w-5xl mx-auto px-6 py-10 flex flex-col md:flex-row justify-between items-center gap-4"
+            style="border-top:1px solid var(--border);">
+        <span class="text-sm font-extrabold tracking-tight gradient-text">Ignacio Bermúdez Solutions</span>
+        <p class="mono text-[10px] uppercase tracking-widest" style="color:var(--text-subtle);">
+            © 2026 — Mendoza, AR / Florencia, IT
+        </p>
     </footer>
 
-    <!-- ── Acordeón JS ── -->
+    <!-- ═══════════════════════════════════════════════════
+         JAVASCRIPT
+    ═══════════════════════════════════════════════════ -->
     <script>
-        document.querySelectorAll('.accordion-toggle').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const body = document.getElementById(btn.dataset.target);
-                const isOpen = body.classList.contains('open');
+    // ── 1. CURSOR PERSONALIZADO ──────────────────────────
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let ringX = 0, ringY = 0;
 
-                if (isOpen) {
-                    body.style.maxHeight = body.scrollHeight + 'px';
-                    requestAnimationFrame(() => {
-                        body.style.maxHeight = '0px';
-                        body.classList.remove('open');
-                        btn.classList.remove('active');
-                        btn.querySelector('.toggle-icon').textContent = '+';
-                    });
-                } else {
-                    body.classList.add('open');
-                    body.style.maxHeight = body.scrollHeight + 'px';
-                    btn.classList.add('active');
-                    btn.querySelector('.toggle-icon').textContent = '+';
-                }
+    document.addEventListener('mousemove', e => {
+        dot.style.left  = e.clientX + 'px';
+        dot.style.top   = e.clientY + 'px';
+    });
 
-                body.addEventListener('transitionend', () => {
-                    if (body.classList.contains('open')) {
-                        body.style.maxHeight = 'none';
-                    }
-                }, { once: true });
-            });
+    // Ring sigue con lag suave
+    (function animateRing() {
+        const mx = parseFloat(dot.style.left) || 0;
+        const my = parseFloat(dot.style.top)  || 0;
+        ringX += (mx - ringX) * 0.12;
+        ringY += (my - ringY) * 0.12;
+        ring.style.left = ringX + 'px';
+        ring.style.top  = ringY + 'px';
+        requestAnimationFrame(animateRing);
+    })();
+
+    document.querySelectorAll('a, button, input, textarea, select').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            ring.style.width  = '48px';
+            ring.style.height = '48px';
+            dot.style.opacity = '0';
         });
+        el.addEventListener('mouseleave', () => {
+            ring.style.width  = '32px';
+            ring.style.height = '32px';
+            dot.style.opacity = '1';
+        });
+    });
+
+    // ── 2. TYPEWRITER HERO ───────────────────────────────
+    const lines = ['Escritura, IA\ny soluciones\ndigitales.'];
+    const target = document.getElementById('typewriter-text');
+    let i = 0;
+    const fullText = lines[0];
+
+    function type() {
+        if (i <= fullText.length) {
+            target.innerHTML = fullText.slice(0, i).replace(/\n/g, '<br/>');
+            i++;
+            setTimeout(type, i === 1 ? 600 : 45);
+        } else {
+            document.getElementById('tw-cursor').style.display = 'none';
+        }
+    }
+    setTimeout(type, 800);
+
+    // Revelar elementos debajo del título una vez terminado
+    setTimeout(() => {
+        document.querySelectorAll('#inicio .reveal').forEach(el => el.classList.add('visible'));
+    }, 800 + fullText.length * 45 + 200);
+
+    // ── 3. PARALLAX ──────────────────────────────────────
+    const grid = document.getElementById('parallax-grid');
+    window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+        if (grid) grid.style.transform = `translateY(${y * 0.15}px)`;
+    }, { passive: true });
+
+    // ── 4. SCROLL ANIMATIONS ─────────────────────────────
+    const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    const observer  = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                observer.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+
+    // ── 5. CONTADORES ANIMADOS ───────────────────────────
+    document.querySelectorAll('[data-counter]').forEach(el => {
+        const target = parseInt(el.dataset.counter);
+        const obs = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) {
+                let count = 0;
+                const step = Math.ceil(target / 30);
+                const t = setInterval(() => {
+                    count = Math.min(count + step, target);
+                    el.textContent = count + (target === 7 ? '+' : '');
+                    if (count >= target) clearInterval(t);
+                }, 40);
+                obs.unobserve(el);
+            }
+        }, { threshold: 0.5 });
+        obs.observe(el);
+    });
+
+    // ── 6. ACORDEÓN ──────────────────────────────────────
+    document.querySelectorAll('.accordion-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const body   = document.getElementById(btn.dataset.target);
+            const isOpen = body.classList.contains('open');
+            if (isOpen) {
+                body.style.maxHeight = body.scrollHeight + 'px';
+                requestAnimationFrame(() => {
+                    body.style.maxHeight = '0px';
+                    body.classList.remove('open');
+                    btn.classList.remove('active');
+                    btn.querySelector('.toggle-icon').textContent = '+';
+                });
+            } else {
+                body.classList.add('open');
+                body.style.maxHeight = body.scrollHeight + 'px';
+                btn.classList.add('active');
+                btn.querySelector('.toggle-icon').textContent = '+';
+            }
+            body.addEventListener('transitionend', () => {
+                if (body.classList.contains('open')) body.style.maxHeight = 'none';
+            }, { once: true });
+        });
+    });
+
+    // ── 7. THEME TOGGLE ──────────────────────────────────
+    const html      = document.documentElement;
+    const themeBtn  = document.getElementById('theme-toggle');
+    const saved     = localStorage.getItem('ib-theme') || 'dark';
+    html.setAttribute('data-theme', saved);
+    themeBtn.textContent = saved === 'dark' ? '◑' : '◐';
+
+    themeBtn.addEventListener('click', () => {
+        const current = html.getAttribute('data-theme');
+        const next    = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('ib-theme', next);
+        themeBtn.textContent = next === 'dark' ? '◑' : '◐';
+    });
+
+    // ── 8. TRANSICIONES DE PÁGINA ────────────────────────
+    const overlay = document.getElementById('page-transition');
+
+    function navigateTo(url) {
+        overlay.className = 'enter';
+        setTimeout(() => window.location.href = url, 350);
+    }
+
+    document.querySelectorAll('a.nav-transition-link').forEach(a => {
+        const href = a.getAttribute('href');
+        if (!href || href.startsWith('#')) return;
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            navigateTo(href);
+        });
+    });
+
+    // Fade out al cargar
+    window.addEventListener('load', () => {
+        overlay.className = 'exit';
+        setTimeout(() => overlay.className = '', 400);
+    });
+
+    // ── 9. TERMINAL INTERACTIVA ──────────────────────────
+    const output = document.getElementById('terminal-output');
+    const input  = document.getElementById('terminal-input');
+    const history = [];
+    let historyIndex = -1;
+
+    const COMMANDS = {
+        help: () => `
+<div class="t-red">Comandos disponibles:</div>
+<div class="t-dim">─────────────────────────────</div>
+<div><span class="t-red">servicios</span>  &nbsp;→ lista de servicios</div>
+<div><span class="t-red">proyectos</span>  &nbsp;→ plataformas en desarrollo</div>
+<div><span class="t-red">quienes</span>    &nbsp;→ sobre el estudio</div>
+<div><span class="t-red">contacto</span>   &nbsp;→ cómo comunicarse</div>
+<div><span class="t-red">articulos</span>  &nbsp;→ ir a la sección de artículos</div>
+<div><span class="t-red">stack</span>      &nbsp;→ tecnologías que usamos</div>
+<div><span class="t-red">clear</span>      &nbsp;→ limpiar terminal</div>
+<div>&nbsp;</div>`,
+
+        servicios: () => `
+<div class="t-red">// Servicios activos</div>
+<div>01  Ghostwriting</div>
+<div>02  Corrección literaria</div>
+<div>03  Copywriting</div>
+<div>04  Biografías</div>
+<div>05  Prompts IA</div>
+<div>06  Automatización de procesos</div>
+<div class="t-dim">→ <a href="#servicios" style="color:inherit;text-decoration:underline;">Ver detalle ↑</a></div>
+<div>&nbsp;</div>`,
+
+        proyectos: () => `
+<div class="t-red">// Plataformas propias [EN DESARROLLO]</div>
+<div>06  Recovery OS      — salud / recuperación de adicciones</div>
+<div>07  IA Aplicada       — herramientas con Anthropic / Claude</div>
+<div>08  Nómade Agency     — agencias para viajeros remotos</div>
+<div>&nbsp;</div>`,
+
+        quienes: () => `
+<div class="t-red">// Ignacio Bermúdez Solutions</div>
+<div class="t-dim">Estudio de escritura, edición, IA y soluciones digitales.</div>
+<div>Criterio editorial · Claridad estratégica</div>
+<div>Sensibilidad humana · Tecnología práctica</div>
+<div class="t-dim">Mendoza, AR / Florencia, IT</div>
+<div>&nbsp;</div>`,
+
+        contacto: () => `
+<div class="t-red">// Contacto</div>
+<div>EMAIL   → ignacio@ib-os.com</div>
+<div>SIGNAL  → disponible</div>
+<div>FORM    → <a href="#contacto" style="color:inherit;text-decoration:underline;">sección de contacto ↑</a></div>
+<div>&nbsp;</div>`,
+
+        articulos: () => {
+            setTimeout(() => navigateTo('articulos.html'), 600);
+            return `<div class="t-dim">→ Navegando a artículos...</div><div>&nbsp;</div>`;
+        },
+
+        stack: () => `
+<div class="t-red">// Stack tecnológico</div>
+<div>LENGUAJES   Python · JavaScript · HTML/CSS</div>
+<div>IA          Claude (Anthropic) · GPT</div>
+<div>BACKEND     FastAPI · n8n · Make</div>
+<div>HARDWARE    ESP32</div>
+<div>INFRA       Hostinger · GitHub</div>
+<div>&nbsp;</div>`,
+
+        clear: () => { output.innerHTML = ''; return null; },
+    };
+
+    function processCommand(cmd) {
+        const trimmed = cmd.trim().toLowerCase();
+
+        // Mostrar comando escrito
+        if (trimmed !== 'clear') {
+            output.innerHTML += `<div><span class="t-dim">~$</span> <span class="t-cmd">${cmd}</span></div>`;
+        }
+
+        if (!trimmed) { output.innerHTML += '<div>&nbsp;</div>'; }
+        else if (COMMANDS[trimmed]) {
+            const result = COMMANDS[trimmed]();
+            if (result) output.innerHTML += result;
+        } else {
+            output.innerHTML += `<div class="t-dim">Comando no reconocido: <span style="color:var(--red);">${trimmed}</span>. Probá con <span style="color:var(--red);">help</span>.</div><div>&nbsp;</div>`;
+        }
+
+        output.scrollTop = output.scrollHeight;
+    }
+
+    input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+            const val = input.value;
+            if (val.trim()) history.unshift(val);
+            historyIndex = -1;
+            processCommand(val);
+            input.value = '';
+        }
+        if (e.key === 'ArrowUp') {
+            historyIndex = Math.min(historyIndex + 1, history.length - 1);
+            input.value  = history[historyIndex] || '';
+        }
+        if (e.key === 'ArrowDown') {
+            historyIndex = Math.max(historyIndex - 1, -1);
+            input.value  = historyIndex === -1 ? '' : history[historyIndex];
+        }
+    });
+
+    document.querySelector('.terminal-window').addEventListener('click', () => input.focus());
+
+    // ── 10. FORMULARIO DE CONTACTO ───────────────────────
+    document.getElementById('contact-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const btn     = document.getElementById('form-btn');
+        const success = document.getElementById('form-success');
+        const data    = new FormData(e.target);
+
+        btn.disabled     = true;
+        btn.textContent  = 'Enviando...';
+
+        try {
+            const res = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: data
+            });
+            const json = await res.json();
+            if (json.success) {
+                success.style.display = 'block';
+                e.target.reset();
+                btn.textContent = 'Enviado ✓';
+            } else {
+                throw new Error();
+            }
+        } catch {
+            btn.disabled    = false;
+            btn.textContent = 'Error — intentá de nuevo';
+        }
+    });
     </script>
 
 </body>
