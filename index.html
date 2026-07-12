@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IB_OS | Ignacio Bermúdez</title>
+    <title>Ignacio Bermúdez Soluciones</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Inter:wght@400;600;800&display=swap');
@@ -58,7 +58,6 @@
 
         .accordion-body.open {
             opacity: 1;
-            /* max-height set by JS */
         }
 
         .accordion-toggle {
@@ -94,6 +93,18 @@
         .accordion-toggle.active .toggle-icon {
             transform: rotate(45deg);
         }
+
+        /* ── Pilares ── */
+        .pilar-card {
+            border: 1px solid #1a1a1a;
+            padding: 28px;
+            transition: border-color 0.2s, background 0.2s;
+        }
+
+        .pilar-card:hover {
+            border-color: #3f3f3f;
+            background: #0a0a0a;
+        }
     </style>
 </head>
 <body>
@@ -101,61 +112,64 @@
     <!-- NAV -->
     <nav class="fixed top-0 left-0 right-0 z-50 border-b border-zinc-900 bg-[#050505]/90 backdrop-blur-sm">
         <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-            <span class="text-sm font-extrabold tracking-tighter gradient-text uppercase">IB_OS v.2026</span>
+            <span class="text-sm font-extrabold tracking-tight gradient-text">Ignacio Bermúdez Soluciones</span>
             <div class="mono text-[10px] space-x-6 uppercase tracking-widest text-zinc-400 hidden md:flex">
-                <a href="#inicio"     class="hover:text-white transition-colors">Inicio</a>
-                <a href="#quienes"    class="hover:text-white transition-colors">Quiénes somos</a>
-                <a href="#servicios"  class="hover:text-white transition-colors">Servicios</a>
-                <a href="#manifiesto" class="hover:text-white transition-colors">Manifiesto</a>
-                <a href="#promis"     class="hover:text-white transition-colors">PROMIS</a>
-                <a href="#archivo"    class="hover:text-white transition-colors">Archivo</a>
+                <a href="#inicio"    class="hover:text-white transition-colors">Inicio</a>
+                <a href="#quienes"   class="hover:text-white transition-colors">Quiénes somos</a>
+                <a href="#servicios" class="hover:text-white transition-colors">Servicios</a>
+                <a href="#proyectos" class="hover:text-white transition-colors">Proyectos</a>
+                <a href="#archivo"   class="hover:text-white transition-colors">Contacto</a>
             </div>
         </div>
     </nav>
 
     <!-- ═══════════════════════════════════════════════════
-         SECCIÓN 1 — INICIO / HERO  (siempre visible)
+         SECCIÓN 1 — INICIO / HERO
     ═══════════════════════════════════════════════════ -->
     <section id="inicio" class="min-h-screen flex flex-col justify-center max-w-5xl mx-auto px-6 pt-24 pb-20">
 
         <div class="fade-in">
             <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-6">
-                <span class="section-line"></span>Sistema activo — 2026
+                <span class="section-line"></span>Estudio digital — Mendoza / Florencia
             </p>
 
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter gradient-text uppercase leading-none mb-8">
-                IB_OS<br/>v.2026
+            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tighter gradient-text leading-tight mb-8">
+                Escritura, IA<br/>y soluciones<br/>digitales.
             </h1>
 
-            <p class="text-zinc-400 text-lg md:text-xl max-w-xl leading-relaxed mb-10">
-                Plataforma de escritura, investigación y vigilancia narrativa.<br/>
-                Ghostwriting técnico para proyectos que no pueden firmar con nombre propio.
+            <p class="text-zinc-400 text-lg max-w-xl leading-relaxed mb-10">
+                Ayudamos a personas, profesionales y organizaciones a comunicar mejor,
+                ordenar ideas y crear herramientas útiles.
             </p>
 
             <div class="flex flex-wrap gap-4">
-                <a href="#quienes"
+                <a href="#servicios"
                    class="mono text-xs uppercase tracking-widest border border-zinc-700 px-6 py-3 hover:border-white hover:text-white transition-all">
-                    Quiénes somos
+                    Ver servicios
                 </a>
-                <a href="#promis"
-                   class="mono text-xs uppercase tracking-widest bg-red-700 px-6 py-3 hover:bg-red-600 transition-colors">
-                    Ver proyecto PROMIS
+                <a href="#archivo"
+                   class="mono text-xs uppercase tracking-widest bg-white text-black px-6 py-3 hover:bg-zinc-200 transition-colors">
+                    Contactar
                 </a>
             </div>
         </div>
 
-        <div class="mt-24 grid grid-cols-3 gap-8 border-t border-zinc-900 pt-10">
+        <div class="mt-24 grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-zinc-900 pt-10">
             <div>
                 <p class="mono text-2xl font-bold text-white">7+</p>
-                <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Libros ghostwritten</p>
+                <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Libros publicados</p>
             </div>
             <div>
                 <p class="mono text-2xl font-bold text-white">3</p>
                 <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Países de operación</p>
             </div>
             <div>
+                <p class="mono text-2xl font-bold text-white">IA</p>
+                <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Anthropic / Claude</p>
+            </div>
+            <div>
                 <p class="mono text-2xl font-bold text-white">01</p>
-                <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Novela en desarrollo</p>
+                <p class="mono text-[10px] text-zinc-500 uppercase tracking-widest mt-1">Plataforma de salud</p>
             </div>
         </div>
 
@@ -173,80 +187,74 @@
                     <span class="section-line"></span>// quiénes somos
                 </p>
                 <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase">
-                    Un sistema.<br/>No un autor.
+                    Ignacio Bermúdez<br/>Soluciones
                 </h2>
-                <p class="text-zinc-500 text-sm mt-4 max-w-lg leading-relaxed">
-                    IB_OS es una arquitectura operativa creada por Ignacio Bermúdez para producir
-                    narrativa técnica y textos que otros no pueden firmar.
+                <p class="text-zinc-400 text-base mt-4 max-w-xl leading-relaxed">
+                    Un estudio de escritura, edición, inteligencia artificial y soluciones digitales.
                 </p>
             </div>
             <button class="accordion-toggle mono text-[10px] uppercase tracking-widest self-start md:self-end"
                     data-target="quienes-body">
-                <i class="toggle-icon">+</i> Ver más
+                <i class="toggle-icon">+</i> Conocernos
             </button>
         </div>
 
         <!-- Contenido expandible -->
         <div id="quienes-body" class="accordion-body">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-start pt-8">
+            <div class="pt-10 space-y-16">
 
-                <div class="space-y-6 text-zinc-400 leading-relaxed">
-                    <p>
-                        IB_OS no es un escritor. Es una arquitectura operativa creada por
-                        <span class="text-white font-semibold">Ignacio Bermúdez</span> para producir
-                        narrativa técnica, investigación profunda y textos que otros no pueden firmar.
-                    </p>
-                    <p>
-                        Operamos desde Mendoza (AR) y Florencia (IT) en la intersección entre
-                        la literatura maximalista, el código y la vigilancia informacional.
-                        Cada proyecto es un proceso, no una inspiración.
-                    </p>
-                    <p>
-                        Siete libros publicados bajo anonimato demuestran que el sistema funciona.
-                        El nombre no importa. El texto sí.
-                    </p>
-                </div>
+                <!-- Párrafos principales -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div class="space-y-6 text-zinc-300 leading-relaxed text-base">
+                        <p>
+                            Ayudamos a personas, profesionales y organizaciones a
+                            <span class="text-white font-semibold">comunicar mejor, ordenar ideas y crear herramientas útiles.</span>
+                        </p>
+                        <p class="text-zinc-400">
+                            Trabajamos con corrección literaria, ghostwriting, copywriting, biografías,
+                            prompts de IA, textos para páginas web y automatización de procesos.
+                        </p>
+                        <p class="text-zinc-400">
+                            También desarrollamos una plataforma digital de salud y acompañamiento
+                            para personas en recuperación de consumos problemáticos, pensada para
+                            registrar avances, organizar rutinas, sostener hábitos y facilitar un
+                            seguimiento claro del proceso.
+                        </p>
+                    </div>
 
-                <div class="space-y-4">
-                    <div class="terminal-box p-6 rounded-sm">
-                        <p class="mono text-[10px] text-zinc-600 mb-4">$ whoami</p>
-                        <div class="space-y-3 mono text-xs">
-                            <div class="flex justify-between text-zinc-300">
-                                <span class="text-zinc-600">OPERADOR</span>
-                                <span>Ignacio Bermúdez</span>
-                            </div>
-                            <div class="flex justify-between text-zinc-300">
-                                <span class="text-zinc-600">ROL</span>
-                                <span>Ghostwriter / Investigador</span>
-                            </div>
-                            <div class="flex justify-between text-zinc-300">
-                                <span class="text-zinc-600">STACK</span>
-                                <span>ESP32 / Python / FastAPI</span>
-                            </div>
-                            <div class="flex justify-between text-zinc-300">
-                                <span class="text-zinc-600">FOCO</span>
-                                <span>OSINT / Criptografía / Narrativa</span>
-                            </div>
-                            <div class="flex justify-between text-zinc-300">
-                                <span class="text-zinc-600">ESTADO</span>
-                                <span class="text-red-500 animate-pulse">ACTIVO</span>
-                            </div>
-                            <div class="flex justify-between text-zinc-300">
-                                <span class="text-zinc-600">ACCESO</span>
-                                <span class="text-yellow-500">SIGNAL_ONLY</span>
-                            </div>
+                    <div class="space-y-4">
+                        <!-- Los cuatro pilares -->
+                        <p class="mono text-[10px] text-zinc-600 uppercase tracking-widest mb-4">Cómo trabajamos</p>
+                        <div class="pilar-card">
+                            <p class="mono text-[10px] text-red-600 mb-2">01 /</p>
+                            <h4 class="text-white font-semibold mb-1">Criterio editorial</h4>
+                            <p class="text-zinc-500 text-sm">Precisión en el lenguaje. Cada palabra tiene un propósito.</p>
+                        </div>
+                        <div class="pilar-card">
+                            <p class="mono text-[10px] text-red-600 mb-2">02 /</p>
+                            <h4 class="text-white font-semibold mb-1">Claridad estratégica</h4>
+                            <p class="text-zinc-500 text-sm">Ideas complejas convertidas en mensajes que funcionan.</p>
+                        </div>
+                        <div class="pilar-card">
+                            <p class="mono text-[10px] text-red-600 mb-2">03 /</p>
+                            <h4 class="text-white font-semibold mb-1">Sensibilidad humana</h4>
+                            <p class="text-zinc-500 text-sm">Escuchamos antes de escribir o construir.</p>
+                        </div>
+                        <div class="pilar-card">
+                            <p class="mono text-[10px] text-red-600 mb-2">04 /</p>
+                            <h4 class="text-white font-semibold mb-1">Tecnología práctica</h4>
+                            <p class="text-zinc-500 text-sm">IA y automatización al servicio de resultados reales.</p>
                         </div>
                     </div>
+                </div>
 
-                    <div class="terminal-box p-6 rounded-sm">
-                        <p class="mono text-[10px] text-zinc-600 mb-3">$ cat principios.txt</p>
-                        <ul class="mono text-xs text-zinc-400 space-y-2">
-                            <li><span class="text-red-600 mr-2">></span>El autor desaparece en el sistema</li>
-                            <li><span class="text-red-600 mr-2">></span>La precisión léxica como código binario</li>
-                            <li><span class="text-red-600 mr-2">></span>Sin diálogos de guión — solo corriente continua</li>
-                            <li><span class="text-red-600 mr-2">></span>El silencio es el dato que no se puede cifrar</li>
-                        </ul>
-                    </div>
+                <!-- Frase de cierre -->
+                <div class="border-l-2 border-red-700 pl-6 max-w-2xl">
+                    <p class="text-zinc-300 text-lg leading-relaxed italic">
+                        "Combinamos criterio editorial, claridad estratégica, sensibilidad humana
+                        y tecnología práctica para transformar ideas complejas en textos, sistemas
+                        y soluciones que funcionen."
+                    </p>
                 </div>
 
             </div>
@@ -269,13 +277,13 @@
                     Lo que hacemos.
                 </h2>
                 <p class="text-zinc-500 text-sm mt-4 max-w-lg leading-relaxed">
-                    8 módulos operativos. Se contratan por separado o como pipeline completo.
-                    Todos bajo anonimato total.
+                    Escritura, edición, IA y automatización. Cada servicio se contrata por separado
+                    o como parte de un proceso integrado.
                 </p>
             </div>
             <button class="accordion-toggle mono text-[10px] uppercase tracking-widest self-start md:self-end"
                     data-target="servicios-body">
-                <i class="toggle-icon">+</i> Ver módulos
+                <i class="toggle-icon">+</i> Ver servicios
             </button>
         </div>
 
@@ -285,136 +293,99 @@
 
                 <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
                     <div class="mono text-[10px] text-red-600 mb-6">01 /</div>
-                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Ghostwriting</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                        Redacción completa de libros, ensayos y contenido técnico bajo tu firma.
-                        Sin crédito, sin rastro. Voz adaptada al 100%.
+                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">Ghostwriting</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed mb-5">
+                        Redactamos textos completos bajo tu firma. Libros, memorias,
+                        artículos y más. Sin crédito visible, con voz adaptada a la tuya.
                     </p>
                     <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                        <li>> Novelas y thrillers</li>
-                        <li>> Ensayos técnicos</li>
-                        <li>> Contenido editorial</li>
-                        <li>> Manuscritos completos</li>
+                        <li>> Libros y memorias</li>
+                        <li>> Artículos de opinión</li>
+                        <li>> Contenido profesional</li>
                     </ul>
                 </div>
 
                 <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
                     <div class="mono text-[10px] text-red-600 mb-6">02 /</div>
-                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Investigación OSINT</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                        Recopilación y análisis de información de fuentes abiertas para proyectos
-                        narrativos, periodísticos o de inteligencia privada.
+                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">Corrección literaria</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed mb-5">
+                        Revisión de estilo, gramática, coherencia y estructura
+                        para manuscritos listos para publicar.
                     </p>
                     <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                        <li>> Perfilado de personas y organizaciones</li>
-                        <li>> Rastreo de fuentes digitales</li>
-                        <li>> Análisis de redes</li>
-                        <li>> Informes de vigilancia</li>
+                        <li>> Corrección de estilo</li>
+                        <li>> Edición de manuscritos</li>
+                        <li>> Revisión de estructura</li>
                     </ul>
                 </div>
 
                 <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
                     <div class="mono text-[10px] text-red-600 mb-6">03 /</div>
-                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Narrativa Técnica</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                        Traducción de conceptos técnicos complejos — código, criptografía, sistemas —
-                        a prosa densa y precisa con impacto narrativo.
+                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">Copywriting</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed mb-5">
+                        Textos para webs, landing pages, redes sociales y campañas.
+                        Claro, directo y pensado para convertir.
                     </p>
                     <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                        <li>> Documentación narrativa</li>
-                        <li>> Ficción tecnológica</li>
-                        <li>> Whitepapers literarios</li>
-                        <li>> Guiones técnicos</li>
+                        <li>> Textos web y landing pages</li>
+                        <li>> Redes sociales</li>
+                        <li>> Email marketing</li>
                     </ul>
                 </div>
 
                 <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
                     <div class="mono text-[10px] text-red-600 mb-6">04 /</div>
-                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Consultoría Editorial</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                        Revisión estructural y de voz para manuscritos en desarrollo.
-                        Diagnóstico narrativo y plan de corrección.
+                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">Biografías</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed mb-5">
+                        Construimos narrativas de vida y trayectoria profesional
+                        para personas, emprendedores y organizaciones.
                     </p>
                     <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                        <li>> Análisis de estructura</li>
-                        <li>> Edición de voz y estilo</li>
-                        <li>> Feedback por capítulo</li>
-                        <li>> Estrategia de publicación</li>
+                        <li>> Biogafías personales</li>
+                        <li>> Perfiles profesionales</li>
+                        <li>> Historia de marca</li>
                     </ul>
                 </div>
 
                 <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
                     <div class="mono text-[10px] text-red-600 mb-6">05 /</div>
-                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Publicación KDP</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                        Pipeline completo de autopublicación en Amazon Kindle Direct Publishing,
-                        desde el manuscrito hasta el lanzamiento.
+                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">Prompts IA</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed mb-5">
+                        Diseñamos instrucciones y flujos para modelos de lenguaje como Claude,
+                        adaptados a tu proceso de trabajo o negocio.
                     </p>
                     <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                        <li>> Formato y maquetación</li>
-                        <li>> Diseño de portada</li>
-                        <li>> Optimización de metadata</li>
-                        <li>> Estrategia de precios</li>
+                        <li>> Prompts para Claude / GPT</li>
+                        <li>> Flujos de trabajo con IA</li>
+                        <li>> Asistentes personalizados</li>
                     </ul>
                 </div>
 
                 <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
                     <div class="mono text-[10px] text-red-600 mb-6">06 /</div>
-                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Recovery OS</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                        Plataforma de acompañamiento para personas en proceso de recuperación
-                        de adicciones. Seguimiento, comunidad y contenido basado en evidencia clínica.
+                    <h3 class="text-lg font-bold text-white mb-3 uppercase tracking-tight">Automatización</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed mb-5">
+                        Identificamos procesos repetitivos y los automatizamos con herramientas
+                        digitales, IA y código. Más tiempo, menos fricción.
                     </p>
                     <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                        <li>> Seguimiento diario de estado</li>
-                        <li>> Protocolos de intervención</li>
-                        <li>> Red de soporte anónimo</li>
-                        <li>> Recursos clínicos validados</li>
+                        <li>> Automatización de tareas</li>
+                        <li>> Integración de herramientas</li>
+                        <li>> Flujos con n8n / Make / API</li>
                     </ul>
-                    <span class="mono text-[10px] text-yellow-600 mt-4 block">ESTADO: EN DESARROLLO</span>
                 </div>
 
-                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
-                    <div class="mono text-[10px] text-red-600 mb-6">07 /</div>
-                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">IA Aplicada</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                        Herramientas cognitivas y narrativas basadas en la ciencia de modelos
-                        de lenguaje de Anthropic. Redacción asistida y análisis de textos a escala.
-                    </p>
-                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                        <li>> Agentes de escritura autónomos</li>
-                        <li>> Análisis semántico de corpus</li>
-                        <li>> Investigación OSINT aumentada</li>
-                        <li>> Pipelines con Claude</li>
-                    </ul>
-                    <span class="mono text-[10px] text-yellow-600 mt-4 block">ESTADO: EN DESARROLLO</span>
-                </div>
-
-                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
-                    <div class="mono text-[10px] text-red-600 mb-6">08 /</div>
-                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Nómade Agency</h3>
-                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                        Construcción y operación de agencias remotas para el viajero nómade digital.
-                        Infraestructura, marca y sistemas de trabajo desde cualquier lugar del mundo.
-                    </p>
-                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                        <li>> Estructura legal y fiscal remota</li>
-                        <li>> Branding y posicionamiento</li>
-                        <li>> Stack operativo nómade</li>
-                        <li>> Captación de clientes globales</li>
-                    </ul>
-                    <span class="mono text-[10px] text-yellow-600 mt-4 block">ESTADO: EN DESARROLLO</span>
-                </div>
-
-                <div class="bg-zinc-950 p-8 flex flex-col justify-between border border-zinc-800">
-                    <div class="mono text-[10px] text-zinc-600 mb-4">// acceso</div>
-                    <p class="text-zinc-400 text-sm leading-relaxed mb-6">
-                        Los proyectos se evalúan caso por caso. El acceso no es automático.
-                    </p>
-                    <a href="mailto:ignacio@ib-os.com"
-                       class="mono text-xs uppercase tracking-widest border border-zinc-600 px-4 py-3 text-center hover:border-white hover:text-white transition-all">
-                        Solicitar acceso &rarr;
-                    </a>
+                <!-- CTA -->
+                <div class="bg-zinc-950 p-8 flex flex-col justify-between border border-zinc-800 md:col-span-3">
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                        <p class="text-zinc-400 text-sm">
+                            ¿No sabés qué servicio necesitás? Contanos tu proyecto y lo definimos juntos.
+                        </p>
+                        <a href="mailto:ignacio@ib-os.com"
+                           class="mono text-xs uppercase tracking-widest border border-zinc-600 px-6 py-3 text-center hover:border-white hover:text-white transition-all whitespace-nowrap">
+                            Escribinos &rarr;
+                        </a>
+                    </div>
                 </div>
 
             </div>
@@ -423,112 +394,147 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════
-         SECCIÓN 4 — MANIFIESTO
+         SECCIÓN 4 — PROYECTOS EN DESARROLLO
     ═══════════════════════════════════════════════════ -->
-    <section id="manifiesto" class="max-w-5xl mx-auto px-6 py-20 border-t border-zinc-900">
+    <section id="proyectos" class="max-w-5xl mx-auto px-6 py-20 border-t border-zinc-900">
 
         <!-- Intro siempre visible -->
         <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-8">
             <div>
                 <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-4">
-                    <span class="section-line"></span>// Manifiesto de Escritura
+                    <span class="section-line"></span>// proyectos en desarrollo
                 </p>
                 <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase">
-                    La narrativa<br/>como sistema.
-                </h2>
-                <p class="text-zinc-500 text-sm mt-4 max-w-lg leading-relaxed italic">
-                    "La narrativa no es un refugio sino un sistema de procesamiento de datos."
-                </p>
-            </div>
-            <button class="accordion-toggle mono text-[10px] uppercase tracking-widest self-start md:self-end"
-                    data-target="manifiesto-body">
-                <i class="toggle-icon">+</i> Leer manifiesto
-            </button>
-        </div>
-
-        <!-- Contenido expandible -->
-        <div id="manifiesto-body" class="accordion-body">
-            <div class="max-w-3xl space-y-8 text-lg leading-relaxed text-zinc-300 pt-8">
-                <p>
-                    La narrativa no es un refugio sino un sistema de procesamiento de datos.
-                    Escribo bajo la sombra de arquitecturas maximalistas donde la frase corta
-                    es un golpe de cursor y el párrafo largo un panóptico. En mi laboratorio
-                    literario la precisión léxica se funde con el código binario. No busco la
-                    trama sencilla. Busco la redundancia sistémica que revela la verdad oculta
-                    tras el software de vigilancia.
-                </p>
-                <p class="italic text-zinc-500 border-l border-zinc-800 pl-6">
-                    El autor desaparece en el sistema. No hay diálogos marcados por guiones
-                    porque la voz es una corriente continua. Matías Webb observa el monitor
-                    mientras Clara Rembrandt espera una señal que no llega. El silencio es
-                    el único dato que no se puede cifrar.
-                </p>
-            </div>
-        </div>
-
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════
-         SECCIÓN 5 — PROMIS
-    ═══════════════════════════════════════════════════ -->
-    <section id="promis" class="max-w-5xl mx-auto px-6 py-20 border-t border-zinc-900">
-
-        <!-- Intro siempre visible -->
-        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-8">
-            <div>
-                <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-4">
-                    <span class="section-line"></span>// Proyecto activo
-                </p>
-                <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase">
-                    PROMIS
+                    Plataformas<br/>propias.
                 </h2>
                 <p class="text-zinc-500 text-sm mt-4 max-w-lg leading-relaxed">
-                    Un thriller técnico sobre la genealogía del espionaje moderno.
-                    En desarrollo para KDP.
+                    Además de los servicios al cliente, desarrollamos tres plataformas digitales propias.
                 </p>
             </div>
             <button class="accordion-toggle mono text-[10px] uppercase tracking-widest self-start md:self-end"
-                    data-target="promis-body">
-                <i class="toggle-icon">+</i> Ver detalles
+                    data-target="proyectos-body">
+                <i class="toggle-icon">+</i> Ver proyectos
             </button>
         </div>
 
         <!-- Contenido expandible -->
-        <div id="promis-body" class="accordion-body">
-            <div class="terminal-box p-8 rounded-sm mt-8">
-                <h3 class="text-xl font-bold mb-6">PROYECTO: PROMIS <span class="mono text-sm text-zinc-600">(Novela)</span></h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="text-sm text-zinc-400 space-y-4">
-                        <p>
-                            Un thriller técnico sobre la genealogía del espionaje moderno.
-                            Siete libros publicados bajo el anonimato del ghostwriter convergen aquí.
-                        </p>
-                        <ul class="mono text-xs space-y-2">
-                            <li><span class="text-red-600 mr-2">></span> STACK: ESP32 / PYTHON / FASTAPI</li>
-                            <li><span class="text-red-600 mr-2">></span> FOCUS: OSINT / CRIPTOGRAFÍA</li>
-                            <li><span class="text-red-600 mr-2">></span> STATUS: EN DESARROLLO (KDP)</li>
-                        </ul>
-                    </div>
-                    <div class="border border-zinc-800 p-4 bg-zinc-950 flex items-center justify-center min-h-32">
-                        <span class="mono text-zinc-600 animate-pulse text-[10px]">DATOS_CIFRADOS_05.02.26</span>
+        <div id="proyectos-body" class="accordion-body">
+            <div class="space-y-4 pt-8">
+
+                <!-- Recovery OS -->
+                <div class="terminal-box p-8 rounded-sm">
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="mono text-[10px] text-red-600">06 /</span>
+                                <h3 class="text-xl font-bold text-white uppercase tracking-tight">Recovery OS</h3>
+                                <span class="mono text-[10px] text-yellow-500 border border-yellow-800 px-2 py-0.5">EN DESARROLLO</span>
+                            </div>
+                            <p class="text-zinc-400 text-sm leading-relaxed max-w-xl mb-4">
+                                Plataforma digital de salud y acompañamiento para personas en recuperación
+                                de consumos problemáticos. Pensada para registrar avances, organizar rutinas,
+                                sostener hábitos y facilitar un seguimiento claro del proceso.
+                            </p>
+                            <ul class="mono text-[10px] text-zinc-600 space-y-1">
+                                <li>> Registro diario de estado y avances</li>
+                                <li>> Organización de rutinas y hábitos</li>
+                                <li>> Seguimiento clínico claro</li>
+                                <li>> Red de soporte y acompañamiento</li>
+                            </ul>
+                        </div>
+                        <div class="mono text-[10px] text-zinc-700 space-y-1 text-right shrink-0">
+                            <p>STACK: Python / FastAPI</p>
+                            <p>TARGET: Profesionales de salud</p>
+                            <p>MODELO: SaaS</p>
+                        </div>
                     </div>
                 </div>
+
+                <!-- IA Aplicada -->
+                <div class="terminal-box p-8 rounded-sm">
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="mono text-[10px] text-red-600">07 /</span>
+                                <h3 class="text-xl font-bold text-white uppercase tracking-tight">IA Aplicada</h3>
+                                <span class="mono text-[10px] text-yellow-500 border border-yellow-800 px-2 py-0.5">EN DESARROLLO</span>
+                            </div>
+                            <p class="text-zinc-400 text-sm leading-relaxed max-w-xl mb-4">
+                                Herramientas cognitivas basadas en la ciencia de modelos de lenguaje
+                                de Anthropic. Asistentes, flujos de trabajo y pipelines de contenido
+                                adaptados a procesos editoriales, clínicos y de negocio.
+                            </p>
+                            <ul class="mono text-[10px] text-zinc-600 space-y-1">
+                                <li>> Agentes de escritura y edición</li>
+                                <li>> Automatización con Claude API</li>
+                                <li>> Análisis y clasificación de textos</li>
+                                <li>> Asistentes personalizados por sector</li>
+                            </ul>
+                        </div>
+                        <div class="mono text-[10px] text-zinc-700 space-y-1 text-right shrink-0">
+                            <p>STACK: Claude / Anthropic API</p>
+                            <p>TARGET: Profesionales y empresas</p>
+                            <p>MODELO: B2B / SaaS</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nómade Agency -->
+                <div class="terminal-box p-8 rounded-sm">
+                    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-4 mb-4">
+                                <span class="mono text-[10px] text-red-600">08 /</span>
+                                <h3 class="text-xl font-bold text-white uppercase tracking-tight">Nómade Agency</h3>
+                                <span class="mono text-[10px] text-yellow-500 border border-yellow-800 px-2 py-0.5">EN DESARROLLO</span>
+                            </div>
+                            <p class="text-zinc-400 text-sm leading-relaxed max-w-xl mb-4">
+                                Sistema de construcción y operación de agencias remotas para el viajero
+                                nómade digital. Infraestructura, identidad de marca y herramientas para
+                                trabajar y captar clientes desde cualquier lugar del mundo.
+                            </p>
+                            <ul class="mono text-[10px] text-zinc-600 space-y-1">
+                                <li>> Estructura operativa remota</li>
+                                <li>> Branding y posicionamiento digital</li>
+                                <li>> Stack de herramientas nómade</li>
+                                <li>> Captación de clientes globales</li>
+                            </ul>
+                        </div>
+                        <div class="mono text-[10px] text-zinc-700 space-y-1 text-right shrink-0">
+                            <p>STACK: No-code + IA</p>
+                            <p>TARGET: Freelancers / nómades</p>
+                            <p>MODELO: Comunidad + servicios</p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
     </section>
 
     <!-- ═══════════════════════════════════════════════════
-         FOOTER — ARCHIVO
+         FOOTER — CONTACTO
     ═══════════════════════════════════════════════════ -->
-    <footer id="archivo" class="max-w-5xl mx-auto px-6 border-t border-zinc-900 py-12 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
-        <div class="text-[10px] mono text-zinc-600 uppercase">
-            Mendoza, AR | Florencia, IT | 43.0N - 74.0W
+    <footer id="archivo" class="max-w-5xl mx-auto px-6 border-t border-zinc-900 py-16">
+        <div class="flex flex-col md:flex-row justify-between items-start gap-10">
+            <div>
+                <h3 class="text-xl font-extrabold tracking-tight gradient-text mb-2">Ignacio Bermúdez Soluciones</h3>
+                <p class="text-zinc-500 text-sm max-w-xs leading-relaxed">
+                    Escritura, edición, inteligencia artificial y soluciones digitales.
+                </p>
+                <p class="mono text-[10px] text-zinc-700 mt-4 uppercase">Mendoza, AR | Florencia, IT</p>
+            </div>
+            <div class="flex flex-col gap-3">
+                <a href="mailto:ignacio@ib-os.com"
+                   class="text-white font-semibold hover:underline">ignacio@ib-os.com</a>
+                <span class="mono text-[10px] text-zinc-600 uppercase tracking-widest">Contacto por Signal disponible</span>
+            </div>
         </div>
-        <div class="flex items-center space-x-6">
-            <a href="mailto:ignacio@ib-os.com" class="text-white font-bold hover:underline text-sm">SOLICITAR ACCESO</a>
-            <span class="text-zinc-800">|</span>
-            <span class="mono text-[10px] text-zinc-500">SIGNAL_ONLY</span>
+        <div class="border-t border-zinc-900 mt-10 pt-6">
+            <p class="mono text-[10px] text-zinc-700 uppercase tracking-widest">
+                © 2026 Ignacio Bermúdez Soluciones
+            </p>
         </div>
     </footer>
 
@@ -536,8 +542,7 @@
     <script>
         document.querySelectorAll('.accordion-toggle').forEach(btn => {
             btn.addEventListener('click', () => {
-                const targetId = btn.dataset.target;
-                const body = document.getElementById(targetId);
+                const body = document.getElementById(btn.dataset.target);
                 const isOpen = body.classList.contains('open');
 
                 if (isOpen) {
@@ -547,7 +552,6 @@
                         body.classList.remove('open');
                         btn.classList.remove('active');
                         btn.querySelector('.toggle-icon').textContent = '+';
-                        btn.childNodes[btn.childNodes.length - 1].textContent = btn.dataset.labelClose || ' Ver más';
                     });
                 } else {
                     body.classList.add('open');
@@ -556,7 +560,6 @@
                     btn.querySelector('.toggle-icon').textContent = '+';
                 }
 
-                // Restore natural height after transition ends
                 body.addEventListener('transitionend', () => {
                     if (body.classList.contains('open')) {
                         body.style.maxHeight = 'none';
