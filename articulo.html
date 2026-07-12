@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ═══════════════════════════════════════════════════
+         EDITAR ESTOS CAMPOS PARA CADA ARTÍCULO
+    ═══════════════════════════════════════════════════ -->
+    <title>Título del artículo — Ignacio Bermúdez Solutions</title>
+    <meta name="description" content="Resumen breve del artículo para SEO y redes sociales.">
+    <meta property="og:title"       content="Título del artículo">
+    <meta property="og:description" content="Resumen breve del artículo.">
+    <meta property="og:type"        content="article">
+    <!-- ═══════════════════════════════════════════════════ -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Inter:wght@400;600;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+
+        * { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #e5e5e5;
+        }
+
+        .mono  { font-family: 'Fira Code', monospace; }
+        .serif { font-family: 'Lora', serif; }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #fff, #666);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-line {
+            width: 40px;
+            height: 1px;
+            background: #dc2626;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 12px;
+        }
+
+        /* ── Cuerpo del artículo ── */
+        .article-body {
+            font-family: 'Lora', serif;
+            font-size: 1.125rem;
+            line-height: 1.85;
+            color: #d4d4d4;
+        }
+
+        .article-body p { margin-bottom: 1.6rem; }
+
+        .article-body h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            margin: 3rem 0 1.2rem;
+        }
+
+        .article-body h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #e5e5e5;
+            margin: 2rem 0 0.8rem;
+        }
+
+        .article-body blockquote {
+            border-left: 2px solid #dc2626;
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+            color: #a1a1aa;
+            font-style: italic;
+        }
+
+        .article-body ul, .article-body ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1.6rem;
+            color: #a1a1aa;
+        }
+
+        .article-body ul li { list-style: none; padding-left: 0.5rem; margin-bottom: 0.5rem; }
+        .article-body ul li::before { content: "— "; color: #dc2626; }
+        .article-body ol li { list-style: decimal; margin-bottom: 0.5rem; }
+
+        .article-body a {
+            color: #fff;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+        .article-body a:hover { color: #a1a1aa; }
+
+        .article-body strong { color: #fff; font-weight: 600; }
+        .article-body em     { color: #a1a1aa; }
+
+        .article-body hr {
+            border: none;
+            border-top: 1px solid #1f1f1f;
+            margin: 3rem 0;
+        }
+
+        /* ── Separador de sección ── */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 3rem 0;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #1f1f1f;
+        }
+
+        /* ── Barra de progreso de lectura ── */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: #dc2626;
+            width: 0%;
+            z-index: 100;
+            transition: width 0.1s linear;
+        }
+
+        /* Fade in */
+        .fade-in { animation: fadeIn 0.6s ease forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra de progreso de lectura -->
+    <div id="progress-bar"></div>
+
+    <!-- NAV -->
+    <nav class="fixed top-0 left-0 right-0 z-50 border-b border-zinc-900 bg-[#050505]/90 backdrop-blur-sm">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-sm font-extrabold tracking-tight gradient-text">
+                Ignacio Bermúdez Solutions
+            </a>
+            <div class="mono text-[10px] space-x-6 uppercase tracking-widest text-zinc-400 hidden md:flex">
+                <a href="index.html#inicio"    class="hover:text-white transition-colors">Inicio</a>
+                <a href="index.html#servicios" class="hover:text-white transition-colors">Servicios</a>
+                <a href="articulos.html"       class="hover:text-white transition-colors">Artículos</a>
+                <a href="index.html#archivo"   class="hover:text-white transition-colors">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- BREADCRUMB -->
+    <div class="max-w-3xl mx-auto px-6 pt-28 pb-0">
+        <nav class="mono text-[10px] text-zinc-600 uppercase tracking-widest flex items-center gap-2">
+            <a href="articulos.html" class="hover:text-zinc-400 transition-colors">&larr; Artículos</a>
+            <span>/</span>
+            <!-- EDITAR: categoría del artículo -->
+            <span class="text-red-700">Escritura</span>
+        </nav>
+    </div>
+
+    <!-- ENCABEZADO DEL ARTÍCULO -->
+    <header class="max-w-3xl mx-auto px-6 pt-10 pb-12 border-b border-zinc-900 fade-in">
+
+        <!-- EDITAR: categoría y fecha -->
+        <div class="flex items-center gap-4 mb-6">
+            <span class="mono text-[9px] text-red-600 uppercase tracking-widest border border-red-900/40 px-2 py-0.5">
+                Escritura
+            </span>
+            <span class="mono text-[9px] text-zinc-600">12 Jul 2026</span>
+            <span class="mono text-[9px] text-zinc-700">· 6 min de lectura</span>
+        </div>
+
+        <!-- EDITAR: título -->
+        <h1 class="text-4xl md:text-5xl font-extrabold tracking-tighter text-white leading-tight mb-6">
+            Título del artículo va aquí
+        </h1>
+
+        <!-- EDITAR: bajada / subtítulo -->
+        <p class="text-zinc-400 text-xl leading-relaxed serif">
+            Una oración que resume la idea central del artículo y invita a seguir leyendo.
+            No más de dos líneas.
+        </p>
+
+        <!-- Autor -->
+        <div class="flex items-center gap-3 mt-10">
+            <div class="w-8 h-8 bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                <span class="mono text-[9px] text-zinc-400">IB</span>
+            </div>
+            <div>
+                <p class="text-sm font-semibold text-white">Ignacio Bermúdez</p>
+                <p class="mono text-[9px] text-zinc-600 uppercase tracking-widest">Ignacio Bermúdez Solutions</p>
+            </div>
+        </div>
+
+    </header>
+
+    <!-- CUERPO DEL ARTÍCULO -->
+    <article class="max-w-3xl mx-auto px-6 py-16 article-body fade-in">
+
+        <!--
+        ═══════════════════════════════════════════════════
+        CONTENIDO DEL ARTÍCULO
+        Escribir aquí usando las siguientes etiquetas:
+
+        <p>Párrafo normal</p>
+
+        <h2>Subtítulo de sección</h2>
+
+        <h3>Subtítulo menor</h3>
+
+        <blockquote>Cita o fragmento destacado</blockquote>
+
+        <ul>
+            <li>Ítem de lista</li>
+        </ul>
+
+        <hr>  (separador visual)
+
+        <strong>Texto en negrita</strong>
+        <em>Texto en cursiva</em>
+        ═══════════════════════════════════════════════════
+        -->
+
+        <p>
+            Acá empieza el cuerpo del artículo. Este es el párrafo de apertura:
+            debe capturar la atención, plantear el problema o la pregunta central,
+            y dejar en claro por qué vale la pena seguir leyendo.
+        </p>
+
+        <p>
+            El segundo párrafo puede desarrollar el contexto, contar una anécdota
+            o presentar la tesis. La tipografía serif (<em>Lora</em>) facilita la
+            lectura de textos largos sin cansar.
+        </p>
+
+        <blockquote>
+            Una cita que refuerza el argumento o interrumpe el ritmo para dar
+            peso a una idea. Usarla con moderación.
+        </blockquote>
+
+        <h2>Primera sección del desarrollo</h2>
+
+        <p>
+            El cuerpo del artículo se organiza en secciones con subtítulos claros.
+            Cada sección desarrolla un aspecto de la idea central.
+        </p>
+
+        <ul>
+            <li>Primer punto relevante de esta sección</li>
+            <li>Segundo punto con evidencia o ejemplo concreto</li>
+            <li>Tercer punto que conecta con la idea siguiente</li>
+        </ul>
+
+        <h2>Segunda sección</h2>
+
+        <p>
+            Continuar el desarrollo aquí. Mantener párrafos cortos para no
+            perder al lector. Cada párrafo: una idea.
+        </p>
+
+        <hr>
+
+        <h2>Cierre</h2>
+
+        <p>
+            El cierre no repite lo dicho. Abre una puerta: una pregunta, una
+            consecuencia, una invitación a pensar diferente. El buen ensayo
+            termina antes de que el lector quiera que termine.
+        </p>
+
+    </article>
+
+    <!-- SEPARADOR -->
+    <div class="max-w-3xl mx-auto px-6">
+        <div class="divider">
+            <span class="mono text-[9px] text-zinc-700 uppercase tracking-widest">fin del artículo</span>
+        </div>
+    </div>
+
+    <!-- ARTÍCULOS RELACIONADOS -->
+    <section class="max-w-3xl mx-auto px-6 pb-24">
+        <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-8">
+            <span class="section-line"></span>// seguir leyendo
+        </p>
+        <div id="related-articles" class="grid grid-cols-1 md:grid-cols-2 gap-px bg-zinc-900">
+            <!-- Generado por JS desde articulos.html → ARTICULOS array -->
+        </div>
+        <div class="mt-8 text-center">
+            <a href="articulos.html"
+               class="mono text-[10px] uppercase tracking-widest border border-zinc-800 px-6 py-3 hover:border-white hover:text-white transition-all inline-block">
+                Ver todos los artículos &rarr;
+            </a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="max-w-5xl mx-auto px-6 border-t border-zinc-900 py-10 flex flex-col md:flex-row justify-between items-center gap-4">
+        <a href="index.html" class="text-sm font-extrabold tracking-tight gradient-text">
+            Ignacio Bermúdez Solutions
+        </a>
+        <a href="mailto:ignacio@ib-os.com"
+           class="mono text-[10px] text-zinc-500 hover:text-white transition-colors uppercase tracking-widest">
+            ignacio@ib-os.com
+        </a>
+    </footer>
+
+    <!-- ── JS: progreso de lectura ── -->
+    <script>
+        const bar = document.getElementById('progress-bar');
+        window.addEventListener('scroll', () => {
+            const doc = document.documentElement;
+            const scrolled = doc.scrollTop;
+            const total = doc.scrollHeight - doc.clientHeight;
+            bar.style.width = (scrolled / total * 100) + '%';
+        });
+    </script>
+
+</body>
+</html>
