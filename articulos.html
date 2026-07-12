@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artículos — Ignacio Bermúdez Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;500&family=Inter:wght@400;600;800&display=swap');
+
+        * { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #e5e5e5;
+        }
+
+        .mono { font-family: 'Fira Code', monospace; }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #fff, #666);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-line {
+            width: 40px;
+            height: 1px;
+            background: #dc2626;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 12px;
+        }
+
+        /* Búsqueda */
+        #search-input {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            color: #e5e5e5;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        #search-input:focus { border-color: #555; }
+        #search-input::placeholder { color: #3f3f3f; }
+
+        /* Filtros */
+        .cat-btn {
+            font-family: 'Fira Code', monospace;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid #222;
+            padding: 6px 14px;
+            cursor: pointer;
+            transition: border-color 0.15s, color 0.15s, background 0.15s;
+            background: none;
+            color: #52525b;
+        }
+        .cat-btn:hover  { border-color: #555; color: #e5e5e5; }
+        .cat-btn.active { border-color: #dc2626; color: #fff; background: rgba(220,38,38,0.08); }
+
+        /* Cards */
+        .article-card {
+            border: 1px solid #1a1a1a;
+            transition: border-color 0.2s, background 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+        .article-card:hover { border-color: #3f3f3f; background: #0a0a0a; }
+
+        /* Sin resultados */
+        #no-results { display: none; }
+
+        /* Fade in cards */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .article-card { animation: fadeUp 0.3s ease forwards; }
+    </style>
+</head>
+<body>
+
+    <!-- NAV -->
+    <nav class="fixed top-0 left-0 right-0 z-50 border-b border-zinc-900 bg-[#050505]/90 backdrop-blur-sm">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="index.html" class="text-sm font-extrabold tracking-tight gradient-text">
+                Ignacio Bermúdez Solutions
+            </a>
+            <div class="mono text-[10px] space-x-6 uppercase tracking-widest text-zinc-400 hidden md:flex">
+                <a href="index.html#inicio"    class="hover:text-white transition-colors">Inicio</a>
+                <a href="index.html#quienes"   class="hover:text-white transition-colors">Quiénes somos</a>
+                <a href="index.html#servicios" class="hover:text-white transition-colors">Servicios</a>
+                <a href="index.html#proyectos" class="hover:text-white transition-colors">Proyectos</a>
+                <a href="articulos.html"       class="text-white border-b border-red-600 pb-0.5">Artículos</a>
+                <a href="index.html#archivo"   class="hover:text-white transition-colors">Contacto</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="max-w-5xl mx-auto px-6 pt-32 pb-12 border-b border-zinc-900">
+        <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-4">
+            <span class="section-line"></span>// artículos y ensayos
+        </p>
+        <h1 class="text-5xl font-extrabold tracking-tighter gradient-text uppercase mb-4">
+            Ideas libres.
+        </h1>
+        <p class="text-zinc-500 text-base max-w-xl leading-relaxed">
+            Escritura, inteligencia artificial, salud, vida nómade y todo lo que no cabe
+            en una categoría fija. Ensayos sin periodicidad ni formato obligado.
+        </p>
+    </header>
+
+    <!-- BUSCADOR + FILTROS -->
+    <div class="max-w-5xl mx-auto px-6 py-8 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+
+        <div class="relative w-full md:max-w-sm">
+            <input
+                id="search-input"
+                type="text"
+                placeholder="Buscar artículo..."
+                class="w-full px-4 py-2 text-sm rounded-none"
+            />
+            <span class="mono text-[10px] text-zinc-700 absolute right-3 top-2.5">⌘K</span>
+        </div>
+
+        <div class="flex flex-wrap gap-2" id="cat-filters">
+            <button class="cat-btn active" data-cat="todos">Todos</button>
+            <button class="cat-btn" data-cat="escritura">Escritura</button>
+            <button class="cat-btn" data-cat="ia">Inteligencia Artificial</button>
+            <button class="cat-btn" data-cat="salud">Salud</button>
+            <button class="cat-btn" data-cat="nomade">Vida Nómade</button>
+            <button class="cat-btn" data-cat="tecnologia">Tecnología</button>
+            <button class="cat-btn" data-cat="cultura">Cultura</button>
+        </div>
+
+    </div>
+
+    <!-- CONTADOR -->
+    <div class="max-w-5xl mx-auto px-6 mb-6">
+        <p class="mono text-[10px] text-zinc-600 uppercase tracking-widest">
+            <span id="count">0</span> artículos
+        </p>
+    </div>
+
+    <!-- GRID DE ARTÍCULOS -->
+    <main class="max-w-5xl mx-auto px-6 pb-24">
+        <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-zinc-900">
+        </div>
+        <div id="no-results" class="py-24 text-center">
+            <p class="mono text-zinc-700 text-sm uppercase tracking-widest">Sin resultados para esa búsqueda.</p>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="max-w-5xl mx-auto px-6 border-t border-zinc-900 py-10 flex flex-col md:flex-row justify-between items-center gap-4">
+        <span class="text-sm font-extrabold tracking-tight gradient-text">Ignacio Bermúdez Solutions</span>
+        <a href="mailto:ignacio@ib-os.com" class="mono text-[10px] text-zinc-500 hover:text-white transition-colors uppercase tracking-widest">
+            ignacio@ib-os.com
+        </a>
+    </footer>
+
+    <script>
+    // ─────────────────────────────────────────────────────────────
+    //  BASE DE ARTÍCULOS
+    //  Para agregar artículos: añadir objetos a este array.
+    //  Campos: titulo, categoria, fecha, resumen, url (opcional)
+    // ─────────────────────────────────────────────────────────────
+    const ARTICULOS = [
+        {
+            titulo: "Escribir sin firma: el fantasma como oficio",
+            categoria: "escritura",
+            fecha: "2026-06-10",
+            resumen: "El ghostwriting no es traición a la autoría. Es una forma de servicio, de precisión y de desaparición voluntaria en el texto del otro.",
+            url: "#"
+        },
+        {
+            titulo: "Claude, Anthropic y el futuro del texto asistido",
+            categoria: "ia",
+            fecha: "2026-05-28",
+            resumen: "Los modelos de lenguaje no reemplazan la escritura: la amplían. Una mirada honesta sobre lo que cambia y lo que no cuando usás IA para escribir.",
+            url: "#"
+        },
+        {
+            titulo: "Recuperación y registro: por qué anotar cada día importa",
+            categoria: "salud",
+            fecha: "2026-05-14",
+            resumen: "En los procesos de recuperación de consumos problemáticos, el registro diario no es burocracia. Es evidencia, es brújula y es memoria cuando la memoria falla.",
+            url: "#"
+        },
+        {
+            titulo: "Mendoza a Florencia: trabajar mientras el mundo cambia de fondo",
+            categoria: "nomade",
+            fecha: "2026-04-30",
+            resumen: "Reflexiones sobre construir un estudio digital que funcione igual desde la cordillera que desde la Toscana. Lo que se gana, lo que se pierde, lo que se aprende.",
+            url: "#"
+        },
+        {
+            titulo: "Automatizar no es rendirse: el arte de delegar a las máquinas",
+            categoria: "tecnologia",
+            fecha: "2026-04-18",
+            resumen: "La automatización de procesos no es pereza intelectual. Es la decisión de concentrar energía humana donde realmente hace falta.",
+            url: "#"
+        },
+        {
+            titulo: "El copy que no vende: sobre la honestidad en el texto comercial",
+            categoria: "escritura",
+            fecha: "2026-04-05",
+            resumen: "Hay un tipo de copywriting que empuja, manipula y cansa. Y hay otro que explica, respeta y convence. La diferencia es de ética antes que de técnica.",
+            url: "#"
+        },
+        {
+            titulo: "Prompts como poesía: la instrucción como género literario",
+            categoria: "ia",
+            fecha: "2026-03-22",
+            resumen: "Diseñar un prompt es un acto de escritura. Tiene ritmo, intención, economía de palabras. Y cuando funciona, parece magia aunque sea solo claridad.",
+            url: "#"
+        },
+        {
+            titulo: "Vivir sin dirección fija: identidad y pertenencia en el nomadismo digital",
+            categoria: "nomade",
+            fecha: "2026-03-10",
+            resumen: "El nómade digital no huye. Elige. Pero elegir sin ancla fija plantea preguntas sobre identidad que los libros de productividad no responden.",
+            url: "#"
+        },
+        {
+            titulo: "Leer en tiempos de distracción infinita",
+            categoria: "cultura",
+            fecha: "2026-02-25",
+            resumen: "No leemos menos porque seamos más tontos. Leemos menos porque el diseño del entorno digital está optimizado para interrumpir. Algunas hipótesis y prácticas.",
+            url: "#"
+        },
+        {
+            titulo: "FastAPI para escritores: construir herramientas propias sin ser programador",
+            categoria: "tecnologia",
+            fecha: "2026-02-12",
+            resumen: "Una API propia, aunque sea sencilla, cambia la relación con las herramientas digitales. Crónica de un proceso de aprendizaje sin formación técnica formal.",
+            url: "#"
+        },
+        {
+            titulo: "La biografía como espejo: escribir la vida del otro",
+            categoria: "escritura",
+            fecha: "2026-01-30",
+            resumen: "Escribir una biografía es un acto de escucha antes que de escritura. El biógrafo desaparece. El relato emerge. Pero algo del escritor siempre queda.",
+            url: "#"
+        },
+        {
+            titulo: "Hábito, rutina y recaída: lo que la ciencia dice sobre el cambio",
+            categoria: "salud",
+            fecha: "2026-01-15",
+            resumen: "Cambiar un comportamiento no es un acto de voluntad puro. Es un proceso con biología, contexto y tiempo. Algunas claves para entender por qué cuesta tanto.",
+            url: "#"
+        }
+    ];
+
+    // ─────────────────────────────────────────────────────────────
+    //  RENDERIZADO
+    // ─────────────────────────────────────────────────────────────
+    const CATEGORIAS = {
+        escritura:  "Escritura",
+        ia:         "Inteligencia Artificial",
+        salud:      "Salud",
+        nomade:     "Vida Nómade",
+        tecnologia: "Tecnología",
+        cultura:    "Cultura"
+    };
+
+    function formatFecha(iso) {
+        const [y, m, d] = iso.split('-');
+        const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        return `${d} ${meses[parseInt(m)-1]} ${y}`;
+    }
+
+    function renderCard(art) {
+        return `
+        <div class="article-card bg-[#050505] p-6">
+            <div class="flex items-center justify-between mb-4">
+                <span class="mono text-[9px] text-red-600 uppercase tracking-widest border border-red-900/40 px-2 py-0.5">
+                    ${CATEGORIAS[art.categoria] || art.categoria}
+                </span>
+                <span class="mono text-[9px] text-zinc-700">${formatFecha(art.fecha)}</span>
+            </div>
+            <h2 class="text-base font-bold text-white leading-snug mb-3">${art.titulo}</h2>
+            <p class="text-zinc-500 text-sm leading-relaxed flex-1 mb-5">${art.resumen}</p>
+            <a href="${art.url}"
+               class="mono text-[10px] uppercase tracking-widest text-zinc-600 hover:text-white transition-colors mt-auto">
+                Leer &rarr;
+            </a>
+        </div>`;
+    }
+
+    function render(lista) {
+        const grid = document.getElementById('articles-grid');
+        const noRes = document.getElementById('no-results');
+        const count = document.getElementById('count');
+
+        if (lista.length === 0) {
+            grid.innerHTML = '';
+            noRes.style.display = 'block';
+            count.textContent = '0';
+        } else {
+            noRes.style.display = 'none';
+            grid.innerHTML = lista.map(renderCard).join('');
+            count.textContent = lista.length;
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    //  FILTROS
+    // ─────────────────────────────────────────────────────────────
+    let catActiva = 'todos';
+    let query = '';
+
+    function filtrar() {
+        return ARTICULOS.filter(a => {
+            const porCat = catActiva === 'todos' || a.categoria === catActiva;
+            const porQuery = query === '' ||
+                a.titulo.toLowerCase().includes(query) ||
+                a.resumen.toLowerCase().includes(query);
+            return porCat && porQuery;
+        });
+    }
+
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            catActiva = btn.dataset.cat;
+            render(filtrar());
+        });
+    });
+
+    document.getElementById('search-input').addEventListener('input', e => {
+        query = e.target.value.toLowerCase().trim();
+        render(filtrar());
+    });
+
+    // Render inicial
+    render(ARTICULOS);
+    </script>
+
+</body>
+</html>
