@@ -46,6 +46,54 @@
             from { opacity: 0; transform: translateY(12px); }
             to   { opacity: 1; transform: translateY(0); }
         }
+
+        /* ── Acordeón ── */
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.4s ease;
+            opacity: 0;
+        }
+
+        .accordion-body.open {
+            opacity: 1;
+            /* max-height set by JS */
+        }
+
+        .accordion-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            border: 1px solid #333;
+            padding: 8px 16px;
+            transition: border-color 0.2s, color 0.2s;
+            background: none;
+            color: #71717a;
+        }
+
+        .accordion-toggle:hover {
+            border-color: #fff;
+            color: #fff;
+        }
+
+        .accordion-toggle .toggle-icon {
+            display: inline-block;
+            width: 14px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            font-style: normal;
+        }
+
+        .accordion-toggle.active {
+            border-color: #dc2626;
+            color: #e5e5e5;
+        }
+
+        .accordion-toggle.active .toggle-icon {
+            transform: rotate(45deg);
+        }
     </style>
 </head>
 <body>
@@ -66,7 +114,7 @@
     </nav>
 
     <!-- ═══════════════════════════════════════════════════
-         SECCIÓN 1 — INICIO / HERO
+         SECCIÓN 1 — INICIO / HERO  (siempre visible)
     ═══════════════════════════════════════════════════ -->
     <section id="inicio" class="min-h-screen flex flex-col justify-center max-w-5xl mx-auto px-6 pt-24 pb-20">
 
@@ -116,19 +164,32 @@
     <!-- ═══════════════════════════════════════════════════
          SECCIÓN 2 — QUIÉNES SOMOS
     ═══════════════════════════════════════════════════ -->
-    <section id="quienes" class="max-w-5xl mx-auto px-6 py-32 border-t border-zinc-900">
+    <section id="quienes" class="max-w-5xl mx-auto px-6 py-20 border-t border-zinc-900">
 
-        <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-10">
-            <span class="section-line"></span>// quiénes somos
-        </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
-
-            <!-- Texto principal -->
+        <!-- Intro siempre visible -->
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-8">
             <div>
-                <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase mb-8">
+                <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-4">
+                    <span class="section-line"></span>// quiénes somos
+                </p>
+                <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase">
                     Un sistema.<br/>No un autor.
                 </h2>
+                <p class="text-zinc-500 text-sm mt-4 max-w-lg leading-relaxed">
+                    IB_OS es una arquitectura operativa creada por Ignacio Bermúdez para producir
+                    narrativa técnica y textos que otros no pueden firmar.
+                </p>
+            </div>
+            <button class="accordion-toggle mono text-[10px] uppercase tracking-widest self-start md:self-end"
+                    data-target="quienes-body">
+                <i class="toggle-icon">+</i> Ver más
+            </button>
+        </div>
+
+        <!-- Contenido expandible -->
+        <div id="quienes-body" class="accordion-body">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-start pt-8">
+
                 <div class="space-y-6 text-zinc-400 leading-relaxed">
                     <p>
                         IB_OS no es un escritor. Es una arquitectura operativa creada por
@@ -145,51 +206,50 @@
                         El nombre no importa. El texto sí.
                     </p>
                 </div>
-            </div>
 
-            <!-- Terminal / datos -->
-            <div class="space-y-4">
-                <div class="terminal-box p-6 rounded-sm">
-                    <p class="mono text-[10px] text-zinc-600 mb-4">$ whoami</p>
-                    <div class="space-y-3 mono text-xs">
-                        <div class="flex justify-between text-zinc-300">
-                            <span class="text-zinc-600">OPERADOR</span>
-                            <span>Ignacio Bermúdez</span>
+                <div class="space-y-4">
+                    <div class="terminal-box p-6 rounded-sm">
+                        <p class="mono text-[10px] text-zinc-600 mb-4">$ whoami</p>
+                        <div class="space-y-3 mono text-xs">
+                            <div class="flex justify-between text-zinc-300">
+                                <span class="text-zinc-600">OPERADOR</span>
+                                <span>Ignacio Bermúdez</span>
+                            </div>
+                            <div class="flex justify-between text-zinc-300">
+                                <span class="text-zinc-600">ROL</span>
+                                <span>Ghostwriter / Investigador</span>
+                            </div>
+                            <div class="flex justify-between text-zinc-300">
+                                <span class="text-zinc-600">STACK</span>
+                                <span>ESP32 / Python / FastAPI</span>
+                            </div>
+                            <div class="flex justify-between text-zinc-300">
+                                <span class="text-zinc-600">FOCO</span>
+                                <span>OSINT / Criptografía / Narrativa</span>
+                            </div>
+                            <div class="flex justify-between text-zinc-300">
+                                <span class="text-zinc-600">ESTADO</span>
+                                <span class="text-red-500 animate-pulse">ACTIVO</span>
+                            </div>
+                            <div class="flex justify-between text-zinc-300">
+                                <span class="text-zinc-600">ACCESO</span>
+                                <span class="text-yellow-500">SIGNAL_ONLY</span>
+                            </div>
                         </div>
-                        <div class="flex justify-between text-zinc-300">
-                            <span class="text-zinc-600">ROL</span>
-                            <span>Ghostwriter / Investigador</span>
-                        </div>
-                        <div class="flex justify-between text-zinc-300">
-                            <span class="text-zinc-600">STACK</span>
-                            <span>ESP32 / Python / FastAPI</span>
-                        </div>
-                        <div class="flex justify-between text-zinc-300">
-                            <span class="text-zinc-600">FOCO</span>
-                            <span>OSINT / Criptografía / Narrativa</span>
-                        </div>
-                        <div class="flex justify-between text-zinc-300">
-                            <span class="text-zinc-600">ESTADO</span>
-                            <span class="text-red-500 animate-pulse">ACTIVO</span>
-                        </div>
-                        <div class="flex justify-between text-zinc-300">
-                            <span class="text-zinc-600">ACCESO</span>
-                            <span class="text-yellow-500">SIGNAL_ONLY</span>
-                        </div>
+                    </div>
+
+                    <div class="terminal-box p-6 rounded-sm">
+                        <p class="mono text-[10px] text-zinc-600 mb-3">$ cat principios.txt</p>
+                        <ul class="mono text-xs text-zinc-400 space-y-2">
+                            <li><span class="text-red-600 mr-2">></span>El autor desaparece en el sistema</li>
+                            <li><span class="text-red-600 mr-2">></span>La precisión léxica como código binario</li>
+                            <li><span class="text-red-600 mr-2">></span>Sin diálogos de guión — solo corriente continua</li>
+                            <li><span class="text-red-600 mr-2">></span>El silencio es el dato que no se puede cifrar</li>
+                        </ul>
                     </div>
                 </div>
 
-                <div class="terminal-box p-6 rounded-sm">
-                    <p class="mono text-[10px] text-zinc-600 mb-3">$ cat principios.txt</p>
-                    <ul class="mono text-xs text-zinc-400 space-y-2">
-                        <li><span class="text-red-600 mr-2">></span>El autor desaparece en el sistema</li>
-                        <li><span class="text-red-600 mr-2">></span>La precisión léxica como código binario</li>
-                        <li><span class="text-red-600 mr-2">></span>Sin diálogos de guión — solo corriente continua</li>
-                        <li><span class="text-red-600 mr-2">></span>El silencio es el dato que no se puede cifrar</li>
-                    </ul>
-                </div>
             </div>
-
         </div>
 
     </section>
@@ -197,171 +257,167 @@
     <!-- ═══════════════════════════════════════════════════
          SECCIÓN 3 — SERVICIOS
     ═══════════════════════════════════════════════════ -->
-    <section id="servicios" class="max-w-5xl mx-auto px-6 py-32 border-t border-zinc-900">
+    <section id="servicios" class="max-w-5xl mx-auto px-6 py-20 border-t border-zinc-900">
 
-        <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-10">
-            <span class="section-line"></span>// servicios
-        </p>
-
-        <div class="mb-16">
-            <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase mb-4">
-                Lo que hacemos.
-            </h2>
-            <p class="text-zinc-500 max-w-xl text-sm leading-relaxed">
-                Cada servicio es un módulo del sistema. Se contratan por separado o como pipeline completo.
-                Todos operan bajo anonimato total.
-            </p>
+        <!-- Intro siempre visible -->
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-8">
+            <div>
+                <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-4">
+                    <span class="section-line"></span>// servicios
+                </p>
+                <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase">
+                    Lo que hacemos.
+                </h2>
+                <p class="text-zinc-500 text-sm mt-4 max-w-lg leading-relaxed">
+                    8 módulos operativos. Se contratan por separado o como pipeline completo.
+                    Todos bajo anonimato total.
+                </p>
+            </div>
+            <button class="accordion-toggle mono text-[10px] uppercase tracking-widest self-start md:self-end"
+                    data-target="servicios-body">
+                <i class="toggle-icon">+</i> Ver módulos
+            </button>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-zinc-900">
+        <!-- Contenido expandible -->
+        <div id="servicios-body" class="accordion-body">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-zinc-900 mt-8">
 
-            <!-- Ghostwriting -->
-            <div class="bg-[#050505] p-8 group hover:bg-zinc-950 transition-colors">
-                <div class="mono text-[10px] text-red-600 mb-6">01 /</div>
-                <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Ghostwriting</h3>
-                <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                    Redacción completa de libros, ensayos y contenido técnico bajo tu firma.
-                    Sin crédito, sin rastro. Voz adaptada al 100%.
-                </p>
-                <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                    <li>> Novelas y thrillers</li>
-                    <li>> Ensayos técnicos</li>
-                    <li>> Contenido editorial</li>
-                    <li>> Manuscritos completos</li>
-                </ul>
-            </div>
+                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
+                    <div class="mono text-[10px] text-red-600 mb-6">01 /</div>
+                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Ghostwriting</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
+                        Redacción completa de libros, ensayos y contenido técnico bajo tu firma.
+                        Sin crédito, sin rastro. Voz adaptada al 100%.
+                    </p>
+                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
+                        <li>> Novelas y thrillers</li>
+                        <li>> Ensayos técnicos</li>
+                        <li>> Contenido editorial</li>
+                        <li>> Manuscritos completos</li>
+                    </ul>
+                </div>
 
-            <!-- Investigación / OSINT -->
-            <div class="bg-[#050505] p-8 group hover:bg-zinc-950 transition-colors">
-                <div class="mono text-[10px] text-red-600 mb-6">02 /</div>
-                <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Investigación OSINT</h3>
-                <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                    Recopilación y análisis de información de fuentes abiertas para proyectos
-                    narrativos, periodísticos o de inteligencia privada.
-                </p>
-                <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                    <li>> Perfilado de personas y organizaciones</li>
-                    <li>> Rastreo de fuentes digitales</li>
-                    <li>> Análisis de redes</li>
-                    <li>> Informes de vigilancia</li>
-                </ul>
-            </div>
+                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
+                    <div class="mono text-[10px] text-red-600 mb-6">02 /</div>
+                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Investigación OSINT</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
+                        Recopilación y análisis de información de fuentes abiertas para proyectos
+                        narrativos, periodísticos o de inteligencia privada.
+                    </p>
+                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
+                        <li>> Perfilado de personas y organizaciones</li>
+                        <li>> Rastreo de fuentes digitales</li>
+                        <li>> Análisis de redes</li>
+                        <li>> Informes de vigilancia</li>
+                    </ul>
+                </div>
 
-            <!-- Narrativa técnica -->
-            <div class="bg-[#050505] p-8 group hover:bg-zinc-950 transition-colors">
-                <div class="mono text-[10px] text-red-600 mb-6">03 /</div>
-                <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Narrativa Técnica</h3>
-                <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                    Traducción de conceptos técnicos complejos — código, criptografía, sistemas —
-                    a prosa densa y precisa con impacto narrativo.
-                </p>
-                <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                    <li>> Documentación narrativa</li>
-                    <li>> Ficción tecnológica</li>
-                    <li>> Whitepapers literarios</li>
-                    <li>> Guiones técnicos</li>
-                </ul>
-            </div>
+                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
+                    <div class="mono text-[10px] text-red-600 mb-6">03 /</div>
+                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Narrativa Técnica</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
+                        Traducción de conceptos técnicos complejos — código, criptografía, sistemas —
+                        a prosa densa y precisa con impacto narrativo.
+                    </p>
+                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
+                        <li>> Documentación narrativa</li>
+                        <li>> Ficción tecnológica</li>
+                        <li>> Whitepapers literarios</li>
+                        <li>> Guiones técnicos</li>
+                    </ul>
+                </div>
 
-            <!-- Consultoría editorial -->
-            <div class="bg-[#050505] p-8 group hover:bg-zinc-950 transition-colors">
-                <div class="mono text-[10px] text-red-600 mb-6">04 /</div>
-                <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Consultoría Editorial</h3>
-                <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                    Revisión estructural y de voz para manuscritos en desarrollo.
-                    Diagnóstico narrativo y plan de corrección.
-                </p>
-                <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                    <li>> Análisis de estructura</li>
-                    <li>> Edición de voz y estilo</li>
-                    <li>> Feedback por capítulo</li>
-                    <li>> Estrategia de publicación</li>
-                </ul>
-            </div>
+                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
+                    <div class="mono text-[10px] text-red-600 mb-6">04 /</div>
+                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Consultoría Editorial</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
+                        Revisión estructural y de voz para manuscritos en desarrollo.
+                        Diagnóstico narrativo y plan de corrección.
+                    </p>
+                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
+                        <li>> Análisis de estructura</li>
+                        <li>> Edición de voz y estilo</li>
+                        <li>> Feedback por capítulo</li>
+                        <li>> Estrategia de publicación</li>
+                    </ul>
+                </div>
 
-            <!-- Publicación KDP -->
-            <div class="bg-[#050505] p-8 group hover:bg-zinc-950 transition-colors">
-                <div class="mono text-[10px] text-red-600 mb-6">05 /</div>
-                <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Publicación KDP</h3>
-                <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                    Pipeline completo de autopublicación en Amazon Kindle Direct Publishing,
-                    desde el manuscrito hasta el lanzamiento.
-                </p>
-                <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                    <li>> Formato y maquetación</li>
-                    <li>> Diseño de portada</li>
-                    <li>> Optimización de metadata</li>
-                    <li>> Estrategia de precios</li>
-                </ul>
-            </div>
+                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
+                    <div class="mono text-[10px] text-red-600 mb-6">05 /</div>
+                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Publicación KDP</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
+                        Pipeline completo de autopublicación en Amazon Kindle Direct Publishing,
+                        desde el manuscrito hasta el lanzamiento.
+                    </p>
+                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
+                        <li>> Formato y maquetación</li>
+                        <li>> Diseño de portada</li>
+                        <li>> Optimización de metadata</li>
+                        <li>> Estrategia de precios</li>
+                    </ul>
+                </div>
 
-            <!-- Recovery OS -->
-            <div class="bg-[#050505] p-8 group hover:bg-zinc-950 transition-colors">
-                <div class="mono text-[10px] text-red-600 mb-6">06 /</div>
-                <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Recovery OS</h3>
-                <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                    Plataforma de acompañamiento para personas en proceso de recuperación de adicciones.
-                    Herramientas de seguimiento, comunidad estructurada y contenido basado en evidencia clínica.
-                </p>
-                <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                    <li>> Seguimiento diario de estado</li>
-                    <li>> Protocolos de intervención</li>
-                    <li>> Red de soporte anónimo</li>
-                    <li>> Recursos clínicos validados</li>
-                </ul>
-                <span class="mono text-[10px] text-yellow-600 mt-4 block">ESTADO: EN DESARROLLO</span>
-            </div>
+                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
+                    <div class="mono text-[10px] text-red-600 mb-6">06 /</div>
+                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Recovery OS</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
+                        Plataforma de acompañamiento para personas en proceso de recuperación
+                        de adicciones. Seguimiento, comunidad y contenido basado en evidencia clínica.
+                    </p>
+                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
+                        <li>> Seguimiento diario de estado</li>
+                        <li>> Protocolos de intervención</li>
+                        <li>> Red de soporte anónimo</li>
+                        <li>> Recursos clínicos validados</li>
+                    </ul>
+                    <span class="mono text-[10px] text-yellow-600 mt-4 block">ESTADO: EN DESARROLLO</span>
+                </div>
 
-            <!-- IA / Anthropic Science -->
-            <div class="bg-[#050505] p-8 group hover:bg-zinc-950 transition-colors">
-                <div class="mono text-[10px] text-red-600 mb-6">07 /</div>
-                <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">IA Aplicada</h3>
-                <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                    Desarrollo de herramientas cognitivas y narrativas basadas en la ciencia de modelos
-                    de lenguaje de Anthropic. Investigación, redacción asistida y análisis de textos a escala.
-                </p>
-                <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                    <li>> Agentes de escritura autónomos</li>
-                    <li>> Análisis semántico de corpus</li>
-                    <li>> Investigación OSINT aumentada</li>
-                    <li>> Pipelines de contenido con Claude</li>
-                </ul>
-                <span class="mono text-[10px] text-yellow-600 mt-4 block">ESTADO: EN DESARROLLO</span>
-            </div>
+                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
+                    <div class="mono text-[10px] text-red-600 mb-6">07 /</div>
+                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">IA Aplicada</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
+                        Herramientas cognitivas y narrativas basadas en la ciencia de modelos
+                        de lenguaje de Anthropic. Redacción asistida y análisis de textos a escala.
+                    </p>
+                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
+                        <li>> Agentes de escritura autónomos</li>
+                        <li>> Análisis semántico de corpus</li>
+                        <li>> Investigación OSINT aumentada</li>
+                        <li>> Pipelines con Claude</li>
+                    </ul>
+                    <span class="mono text-[10px] text-yellow-600 mt-4 block">ESTADO: EN DESARROLLO</span>
+                </div>
 
-            <!-- Nómade Digital -->
-            <div class="bg-[#050505] p-8 group hover:bg-zinc-950 transition-colors">
-                <div class="mono text-[10px] text-red-600 mb-6">08 /</div>
-                <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Nómade Agency</h3>
-                <p class="text-zinc-500 text-sm leading-relaxed mb-6">
-                    Construcción y operación de agencias remotas para el viajero nómade digital.
-                    Infraestructura, identidad de marca y sistemas de trabajo desde cualquier lugar del mundo.
-                </p>
-                <ul class="mono text-[10px] text-zinc-600 space-y-2">
-                    <li>> Estructura legal y fiscal remota</li>
-                    <li>> Branding y posicionamiento</li>
-                    <li>> Stack operativo nómade</li>
-                    <li>> Captación de clientes globales</li>
-                </ul>
-                <span class="mono text-[10px] text-yellow-600 mt-4 block">ESTADO: EN DESARROLLO</span>
-            </div>
+                <div class="bg-[#050505] p-8 hover:bg-zinc-950 transition-colors">
+                    <div class="mono text-[10px] text-red-600 mb-6">08 /</div>
+                    <h3 class="text-lg font-bold text-white mb-4 uppercase tracking-tight">Nómade Agency</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed mb-6">
+                        Construcción y operación de agencias remotas para el viajero nómade digital.
+                        Infraestructura, marca y sistemas de trabajo desde cualquier lugar del mundo.
+                    </p>
+                    <ul class="mono text-[10px] text-zinc-600 space-y-2">
+                        <li>> Estructura legal y fiscal remota</li>
+                        <li>> Branding y posicionamiento</li>
+                        <li>> Stack operativo nómade</li>
+                        <li>> Captación de clientes globales</li>
+                    </ul>
+                    <span class="mono text-[10px] text-yellow-600 mt-4 block">ESTADO: EN DESARROLLO</span>
+                </div>
 
-            <!-- CTA -->
-            <div class="bg-zinc-950 p-8 flex flex-col justify-between border border-zinc-800 md:col-span-3">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                    <div>
-                        <div class="mono text-[10px] text-zinc-600 mb-2">// acceso</div>
-                        <p class="text-zinc-300 text-sm">
-                            Los proyectos se evalúan caso por caso. El acceso no es automático.
-                        </p>
-                    </div>
+                <div class="bg-zinc-950 p-8 flex flex-col justify-between border border-zinc-800">
+                    <div class="mono text-[10px] text-zinc-600 mb-4">// acceso</div>
+                    <p class="text-zinc-400 text-sm leading-relaxed mb-6">
+                        Los proyectos se evalúan caso por caso. El acceso no es automático.
+                    </p>
                     <a href="mailto:ignacio@ib-os.com"
-                       class="mono text-xs uppercase tracking-widest border border-zinc-600 px-6 py-3 text-center hover:border-white hover:text-white transition-all whitespace-nowrap">
+                       class="mono text-xs uppercase tracking-widest border border-zinc-600 px-4 py-3 text-center hover:border-white hover:text-white transition-all">
                         Solicitar acceso &rarr;
                     </a>
                 </div>
-            </div>
 
+            </div>
         </div>
 
     </section>
@@ -369,56 +425,93 @@
     <!-- ═══════════════════════════════════════════════════
          SECCIÓN 4 — MANIFIESTO
     ═══════════════════════════════════════════════════ -->
-    <section id="manifiesto" class="max-w-4xl mx-auto px-6 py-32 border-t border-zinc-900">
+    <section id="manifiesto" class="max-w-5xl mx-auto px-6 py-20 border-t border-zinc-900">
 
-        <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-10">
-            <span class="section-line"></span>// Manifiesto de Escritura
-        </p>
+        <!-- Intro siempre visible -->
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-8">
+            <div>
+                <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-4">
+                    <span class="section-line"></span>// Manifiesto de Escritura
+                </p>
+                <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase">
+                    La narrativa<br/>como sistema.
+                </h2>
+                <p class="text-zinc-500 text-sm mt-4 max-w-lg leading-relaxed italic">
+                    "La narrativa no es un refugio sino un sistema de procesamiento de datos."
+                </p>
+            </div>
+            <button class="accordion-toggle mono text-[10px] uppercase tracking-widest self-start md:self-end"
+                    data-target="manifiesto-body">
+                <i class="toggle-icon">+</i> Leer manifiesto
+            </button>
+        </div>
 
-        <div class="space-y-8 text-lg leading-relaxed text-zinc-300">
-            <p>
-                La narrativa no es un refugio sino un sistema de procesamiento de datos.
-                Escribo bajo la sombra de arquitecturas maximalistas donde la frase corta
-                es un golpe de cursor y el párrafo largo un panóptico. En mi laboratorio
-                literario la precisión léxica se funde con el código binario. No busco la
-                trama sencilla. Busco la redundancia sistémica que revela la verdad oculta
-                tras el software de vigilancia.
-            </p>
-            <p class="italic text-zinc-500 border-l border-zinc-800 pl-6">
-                El autor desaparece en el sistema. No hay diálogos marcados por guiones
-                porque la voz es una corriente continua. Matías Webb observa el monitor
-                mientras Clara Rembrandt espera una señal que no llega. El silencio es
-                el único dato que no se puede cifrar.
-            </p>
+        <!-- Contenido expandible -->
+        <div id="manifiesto-body" class="accordion-body">
+            <div class="max-w-3xl space-y-8 text-lg leading-relaxed text-zinc-300 pt-8">
+                <p>
+                    La narrativa no es un refugio sino un sistema de procesamiento de datos.
+                    Escribo bajo la sombra de arquitecturas maximalistas donde la frase corta
+                    es un golpe de cursor y el párrafo largo un panóptico. En mi laboratorio
+                    literario la precisión léxica se funde con el código binario. No busco la
+                    trama sencilla. Busco la redundancia sistémica que revela la verdad oculta
+                    tras el software de vigilancia.
+                </p>
+                <p class="italic text-zinc-500 border-l border-zinc-800 pl-6">
+                    El autor desaparece en el sistema. No hay diálogos marcados por guiones
+                    porque la voz es una corriente continua. Matías Webb observa el monitor
+                    mientras Clara Rembrandt espera una señal que no llega. El silencio es
+                    el único dato que no se puede cifrar.
+                </p>
+            </div>
         </div>
 
     </section>
 
     <!-- ═══════════════════════════════════════════════════
-         SECCIÓN 4 — PROMIS
+         SECCIÓN 5 — PROMIS
     ═══════════════════════════════════════════════════ -->
-    <section id="promis" class="max-w-5xl mx-auto px-6 py-32 border-t border-zinc-900">
+    <section id="promis" class="max-w-5xl mx-auto px-6 py-20 border-t border-zinc-900">
 
-        <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-10">
-            <span class="section-line"></span>// Proyecto activo
-        </p>
+        <!-- Intro siempre visible -->
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-8 mb-8">
+            <div>
+                <p class="mono text-[10px] text-red-600 uppercase tracking-widest mb-4">
+                    <span class="section-line"></span>// Proyecto activo
+                </p>
+                <h2 class="text-4xl font-extrabold tracking-tighter gradient-text uppercase">
+                    PROMIS
+                </h2>
+                <p class="text-zinc-500 text-sm mt-4 max-w-lg leading-relaxed">
+                    Un thriller técnico sobre la genealogía del espionaje moderno.
+                    En desarrollo para KDP.
+                </p>
+            </div>
+            <button class="accordion-toggle mono text-[10px] uppercase tracking-widest self-start md:self-end"
+                    data-target="promis-body">
+                <i class="toggle-icon">+</i> Ver detalles
+            </button>
+        </div>
 
-        <div class="terminal-box p-8 rounded-sm">
-            <h2 class="text-2xl font-bold mb-6">PROYECTO: PROMIS <span class="mono text-sm text-zinc-600">(Novela)</span></h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="text-sm text-zinc-400 space-y-4">
-                    <p>
-                        Un thriller técnico sobre la genealogía del espionaje moderno.
-                        Siete libros publicados bajo el anonimato del ghostwriter convergen aquí.
-                    </p>
-                    <ul class="mono text-xs space-y-2">
-                        <li><span class="text-red-600 mr-2">></span> STACK: ESP32 / PYTHON / FASTAPI</li>
-                        <li><span class="text-red-600 mr-2">></span> FOCUS: OSINT / CRIPTOGRAFÍA</li>
-                        <li><span class="text-red-600 mr-2">></span> STATUS: EN DESARROLLO (KDP)</li>
-                    </ul>
-                </div>
-                <div class="border border-zinc-800 p-4 bg-zinc-950 flex items-center justify-center min-h-32">
-                    <span class="mono text-zinc-600 animate-pulse text-[10px]">DATOS_CIFRADOS_05.02.26</span>
+        <!-- Contenido expandible -->
+        <div id="promis-body" class="accordion-body">
+            <div class="terminal-box p-8 rounded-sm mt-8">
+                <h3 class="text-xl font-bold mb-6">PROYECTO: PROMIS <span class="mono text-sm text-zinc-600">(Novela)</span></h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="text-sm text-zinc-400 space-y-4">
+                        <p>
+                            Un thriller técnico sobre la genealogía del espionaje moderno.
+                            Siete libros publicados bajo el anonimato del ghostwriter convergen aquí.
+                        </p>
+                        <ul class="mono text-xs space-y-2">
+                            <li><span class="text-red-600 mr-2">></span> STACK: ESP32 / PYTHON / FASTAPI</li>
+                            <li><span class="text-red-600 mr-2">></span> FOCUS: OSINT / CRIPTOGRAFÍA</li>
+                            <li><span class="text-red-600 mr-2">></span> STATUS: EN DESARROLLO (KDP)</li>
+                        </ul>
+                    </div>
+                    <div class="border border-zinc-800 p-4 bg-zinc-950 flex items-center justify-center min-h-32">
+                        <span class="mono text-zinc-600 animate-pulse text-[10px]">DATOS_CIFRADOS_05.02.26</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -438,6 +531,40 @@
             <span class="mono text-[10px] text-zinc-500">SIGNAL_ONLY</span>
         </div>
     </footer>
+
+    <!-- ── Acordeón JS ── -->
+    <script>
+        document.querySelectorAll('.accordion-toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.dataset.target;
+                const body = document.getElementById(targetId);
+                const isOpen = body.classList.contains('open');
+
+                if (isOpen) {
+                    body.style.maxHeight = body.scrollHeight + 'px';
+                    requestAnimationFrame(() => {
+                        body.style.maxHeight = '0px';
+                        body.classList.remove('open');
+                        btn.classList.remove('active');
+                        btn.querySelector('.toggle-icon').textContent = '+';
+                        btn.childNodes[btn.childNodes.length - 1].textContent = btn.dataset.labelClose || ' Ver más';
+                    });
+                } else {
+                    body.classList.add('open');
+                    body.style.maxHeight = body.scrollHeight + 'px';
+                    btn.classList.add('active');
+                    btn.querySelector('.toggle-icon').textContent = '+';
+                }
+
+                // Restore natural height after transition ends
+                body.addEventListener('transitionend', () => {
+                    if (body.classList.contains('open')) {
+                        body.style.maxHeight = 'none';
+                    }
+                }, { once: true });
+            });
+        });
+    </script>
 
 </body>
 </html>
