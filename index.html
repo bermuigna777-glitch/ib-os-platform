@@ -1,1 +1,1028 @@
-index.html
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignacio Bermúdez Solutions — Escritura, IA y soluciones digitales</title>
+    <meta name="description" content="Estudio de escritura, edición, inteligencia artificial y automatización. Ayudamos a comunicar mejor y crear herramientas útiles.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* ── Variables de tema ─────────────────────────── */
+        :root {
+            --bg:          #FEFEFE;
+            --bg-2:        #F7F5F2;
+            --bg-3:        #EDEAE6;
+            --text:        #111111;
+            --text-muted:  #666666;
+            --text-subtle: #AAAAAA;
+            --border:      #E5E5E5;
+            --border-2:    #CCCCCC;
+            --red:         #B91C1C;
+            --red-dim:     rgba(185,28,28,0.07);
+            --shadow-sm:   0 1px 3px rgba(0,0,0,0.07);
+            --shadow-md:   0 4px 16px rgba(0,0,0,0.09);
+        }
+        [data-theme="dark"] {
+            --bg:          #111111;
+            --bg-2:        #1A1A1A;
+            --bg-3:        #242424;
+            --text:        #F0F0F0;
+            --text-muted:  #999999;
+            --text-subtle: #555555;
+            --border:      #2A2A2A;
+            --border-2:    #3C3C3C;
+            --red:         #DC2626;
+            --red-dim:     rgba(220,38,38,0.10);
+            --shadow-sm:   0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md:   0 4px 16px rgba(0,0,0,0.4);
+        }
+
+        /* ── Base ──────────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background 0.35s ease, color 0.35s ease;
+            cursor: none;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .serif { font-family: 'Playfair Display', Georgia, serif; }
+        .mono  { font-family: 'Fira Code', monospace; }
+
+        /* ── Cursor ────────────────────────────────────── */
+        #cur-dot {
+            width: 7px; height: 7px;
+            background: var(--red);
+            border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 9999;
+            transform: translate(-50%,-50%);
+            transition: opacity .2s;
+        }
+        #cur-ring {
+            width: 30px; height: 30px;
+            border: 1.5px solid var(--red);
+            border-radius: 50%;
+            position: fixed; pointer-events: none; z-index: 9998;
+            transform: translate(-50%,-50%);
+            opacity: .35;
+            transition: width .18s, height .18s, opacity .18s;
+        }
+        #cur-ring.hover { width: 46px; height: 46px; opacity: .6; }
+
+        /* ── Transición de página ───────────────────────── */
+        #page-veil {
+            position: fixed; inset: 0;
+            background: var(--red);
+            z-index: 8000;
+            transform: scaleX(0); transform-origin: left;
+            pointer-events: none;
+        }
+        #page-veil.in  { animation: veilIn  .32s cubic-bezier(.7,0,.3,1) forwards; }
+        #page-veil.out { animation: veilOut .32s cubic-bezier(.7,0,.3,1) forwards; }
+        @keyframes veilIn  { to { transform: scaleX(1); } }
+        @keyframes veilOut { from { transform: scaleX(1); transform-origin: right; } to { transform: scaleX(0); transform-origin: right; } }
+
+        /* ── Reveal on scroll ───────────────────────────── */
+        .reveal, .reveal-l, .reveal-r {
+            opacity: 0; transition: opacity .65s ease, transform .65s ease;
+        }
+        .reveal   { transform: translateY(20px); }
+        .reveal-l { transform: translateX(-20px); }
+        .reveal-r { transform: translateX( 20px); }
+        .reveal.on, .reveal-l.on, .reveal-r.on { opacity: 1; transform: none; }
+        .d1 { transition-delay: .10s; }
+        .d2 { transition-delay: .20s; }
+        .d3 { transition-delay: .30s; }
+        .d4 { transition-delay: .40s; }
+
+        /* ── Typewriter cursor ──────────────────────────── */
+        .tw-cur {
+            display: inline-block; width: 3px; height: .8em;
+            background: var(--red); vertical-align: middle;
+            animation: blink .75s step-end infinite; margin-left: 2px;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+        /* ── Nav ────────────────────────────────────────── */
+        #main-nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+            border-bottom: 1px solid var(--border);
+            background: color-mix(in srgb, var(--bg) 92%, transparent);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: background .35s, border-color .35s;
+        }
+        .nav-inner {
+            max-width: 1100px; margin: 0 auto;
+            padding: 0 24px;
+            height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px; font-weight: 700;
+            color: var(--text);
+            text-decoration: none;
+            transition: color .2s;
+        }
+        .nav-logo:hover { color: var(--red); }
+        .nav-links {
+            display: flex; align-items: center; gap: 28px;
+        }
+        .nav-links a {
+            font-family: 'Fira Code', monospace;
+            font-size: 10px; letter-spacing: .1em; text-transform: uppercase;
+            color: var(--text-muted); text-decoration: none;
+            transition: color .2s;
+        }
+        .nav-links a:hover { color: var(--text); }
+        #theme-btn {
+            font-family: 'Fira Code', monospace; font-size: 13px;
+            background: none; border: 1px solid var(--border);
+            color: var(--text-muted); cursor: none;
+            width: 30px; height: 30px;
+            display: flex; align-items: center; justify-content: center;
+            transition: border-color .2s, color .2s;
+        }
+        #theme-btn:hover { border-color: var(--border-2); color: var(--text); }
+
+        /* ── Section label ──────────────────────────────── */
+        .sec-label {
+            font-family: 'Fira Code', monospace;
+            font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+            color: var(--red);
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 20px;
+        }
+        .sec-label::before {
+            content: ''; display: block;
+            width: 32px; height: 1px; background: var(--red); flex-shrink: 0;
+        }
+
+        /* ── Cards ──────────────────────────────────────── */
+        .card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow .2s, transform .2s, border-color .2s;
+        }
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+            border-color: var(--border-2);
+        }
+
+        /* ── Acordeón ───────────────────────────────────── */
+        .acc-body {
+            max-height: 0; overflow: hidden; opacity: 0;
+            transition: max-height .5s cubic-bezier(.4,0,.2,1), opacity .4s ease;
+        }
+        .acc-body.open { opacity: 1; }
+        .acc-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: 'Fira Code', monospace; font-size: 10px;
+            letter-spacing: .1em; text-transform: uppercase;
+            background: none; border: 1px solid var(--border);
+            color: var(--text-muted); cursor: none;
+            padding: 8px 16px;
+            transition: border-color .2s, color .2s;
+        }
+        .acc-btn:hover { border-color: var(--border-2); color: var(--text); }
+        .acc-btn.open  { border-color: var(--red); color: var(--text); }
+        .acc-icon { transition: transform .3s; }
+        .acc-btn.open .acc-icon { transform: rotate(45deg); }
+
+        /* ── Terminal ───────────────────────────────────── */
+        .term-wrap {
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            border-radius: 6px; overflow: hidden;
+        }
+        .term-bar {
+            background: var(--bg-3);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .term-circle { width: 11px; height: 11px; border-radius: 50%; }
+        .term-out {
+            background: var(--bg-2);
+            padding: 20px 24px;
+            min-height: 240px; max-height: 320px; overflow-y: auto;
+            font-family: 'Fira Code', monospace; font-size: 12px; line-height: 1.9;
+            color: var(--text-muted);
+        }
+        .tc  { color: var(--text); }
+        .tr  { color: var(--red); }
+        .td  { color: var(--text-subtle); }
+        .term-row {
+            display: flex; align-items: center; gap: 8px;
+            border-top: 1px solid var(--border);
+            padding: 12px 20px; background: var(--bg-2);
+        }
+        .term-ps { font-family: 'Fira Code', monospace; font-size: 12px; color: var(--red); }
+        #t-input {
+            flex: 1; background: none; border: none; outline: none;
+            font-family: 'Fira Code', monospace; font-size: 12px;
+            color: var(--text); cursor: none;
+        }
+
+        /* ── Formulario ─────────────────────────────────── */
+        .f-field {
+            width: 100%;
+            background: var(--bg-2); border: 1px solid var(--border);
+            color: var(--text); padding: 12px 16px;
+            font-family: 'Inter', sans-serif; font-size: 14px;
+            outline: none; transition: border-color .2s;
+        }
+        .f-field:focus { border-color: var(--border-2); }
+        .f-field::placeholder { color: var(--text-subtle); }
+        .f-btn {
+            background: var(--red); color: #fff;
+            border: none; padding: 14px 36px;
+            font-family: 'Fira Code', monospace; font-size: 11px;
+            letter-spacing: .1em; text-transform: uppercase;
+            cursor: none; transition: opacity .2s, transform .15s;
+            width: 100%;
+        }
+        .f-btn:hover   { opacity: .88; transform: translateY(-1px); }
+        .f-btn:active  { transform: none; }
+        .f-btn:disabled { opacity: .5; }
+        #f-ok {
+            display: none; background: var(--red-dim);
+            border: 1px solid var(--red);
+            padding: 14px 16px; font-size: 14px; color: var(--text);
+        }
+
+        /* ── Métrica ────────────────────────────────────── */
+        .metric-val {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem; font-weight: 700; color: var(--text);
+        }
+        .metric-lbl {
+            font-family: 'Fira Code', monospace;
+            font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+            color: var(--text-subtle); margin-top: 4px;
+        }
+
+        /* ── Separador ──────────────────────────────────── */
+        .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+        /* ── Pilares ────────────────────────────────────── */
+        .pilar {
+            border: 1px solid var(--border); padding: 20px 24px;
+            background: var(--bg); transition: border-color .2s, background .2s;
+        }
+        .pilar:hover { border-color: var(--border-2); background: var(--bg-2); }
+
+        /* ── Hero pattern ───────────────────────────────── */
+        .hero-dots {
+            position: absolute; inset: 0; pointer-events: none;
+            background-image: radial-gradient(var(--border) 1px, transparent 1px);
+            background-size: 28px 28px;
+            opacity: .6;
+        }
+        [data-theme="dark"] .hero-dots { opacity: .25; }
+    </style>
+</head>
+<body>
+
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+<div id="page-veil"></div>
+
+<!-- ══════════════════════════════════════════════
+     NAV
+══════════════════════════════════════════════ -->
+<nav id="main-nav">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo nav-go">Ignacio Bermúdez Solutions</a>
+        <div class="nav-links">
+            <a href="#inicio"    class="nav-go">Inicio</a>
+            <a href="#quienes"  class="nav-go hidden md:inline">Quiénes</a>
+            <a href="#servicios" class="nav-go hidden md:inline">Servicios</a>
+            <a href="#proyectos" class="nav-go hidden md:inline">Proyectos</a>
+            <a href="#terminal"  class="nav-go hidden md:inline">Terminal</a>
+            <a href="articulos.html" class="nav-go">Artículos</a>
+            <a href="#contacto"  class="nav-go hidden md:inline">Contacto</a>
+            <button id="theme-btn" aria-label="Cambiar tema">◐</button>
+        </div>
+    </div>
+</nav>
+
+<!-- ══════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════ -->
+<section id="inicio" style="min-height:100vh; display:flex; flex-direction:column; justify-content:center; position:relative; overflow:hidden; padding: 100px 24px 60px;">
+    <div class="hero-dots" id="parallax-bg"></div>
+
+    <div style="max-width:1100px; margin:0 auto; width:100%; position:relative; z-index:1;">
+
+        <div class="sec-label reveal">sonetos.tech</div>
+
+        <h1 class="serif reveal" style="font-size:clamp(2.6rem,6vw,5rem); font-style:italic; font-weight:700; line-height:1.15; max-width:720px; margin-bottom:28px; color:var(--text);">
+            <span id="tw-text"></span><span class="tw-cur" id="tw-cur"></span>
+        </h1>
+
+        <p class="reveal d1" style="font-size:1.1rem; color:var(--text-muted); max-width:520px; line-height:1.75; margin-bottom:40px;">
+            Ayudamos a personas, profesionales y organizaciones a comunicar mejor,
+            ordenar ideas y crear herramientas útiles.
+        </p>
+
+        <div class="reveal d2" style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:80px;">
+            <a href="#servicios" class="nav-go" style="font-family:'Fira Code',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; padding:12px 28px; border:1.5px solid var(--border-2); color:var(--text-muted); text-decoration:none; transition:all .2s;"
+               onmouseover="this.style.borderColor='var(--text)';this.style.color='var(--text)'"
+               onmouseout="this.style.borderColor='var(--border-2)';this.style.color='var(--text-muted)'">
+                Ver servicios
+            </a>
+            <a href="#contacto" class="nav-go" style="font-family:'Fira Code',monospace; font-size:11px; letter-spacing:.1em; text-transform:uppercase; padding:12px 28px; background:var(--red); color:#fff; text-decoration:none; transition:opacity .2s;"
+               onmouseover="this.style.opacity='.82'"
+               onmouseout="this.style.opacity='1'">
+                Contactar
+            </a>
+        </div>
+
+        <hr class="divider reveal d3">
+
+        <div class="reveal d3" style="display:grid; grid-template-columns:repeat(4,1fr); gap:32px; padding-top:32px;">
+            <div>
+                <div class="metric-val" data-count="7" data-suffix="+">0</div>
+                <div class="metric-lbl">Libros publicados</div>
+            </div>
+            <div>
+                <div class="metric-val" data-count="3">0</div>
+                <div class="metric-lbl">Países de operación</div>
+            </div>
+            <div>
+                <div class="metric-val" style="font-size:1.6rem;">Claude</div>
+                <div class="metric-lbl">IA — Anthropic</div>
+            </div>
+            <div>
+                <div class="metric-val" data-count="1">0</div>
+                <div class="metric-lbl">Plataforma de salud</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     QUIÉNES SOMOS
+══════════════════════════════════════════════ -->
+<section id="quienes" style="max-width:1100px; margin:0 auto; padding:80px 24px; border-top:1px solid var(--border);">
+
+    <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:32px;">
+        <div class="reveal">
+            <div class="sec-label">Quiénes somos</div>
+            <h2 class="serif" style="font-size:clamp(2rem,4vw,3rem); font-weight:700; color:var(--text); line-height:1.2;">
+                Ignacio Bermúdez<br/><em>Solutions</em>
+            </h2>
+            <p style="color:var(--text-muted); margin-top:12px; max-width:480px; font-size:1rem;">
+                Un estudio de escritura, edición, inteligencia artificial y soluciones digitales.
+            </p>
+        </div>
+        <button class="acc-btn reveal" data-target="acc-quienes">
+            <span class="acc-icon">+</span> Conocernos
+        </button>
+    </div>
+
+    <div class="acc-body" id="acc-quienes">
+        <div style="padding-top:40px; display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start;" class="md-grid-1">
+
+            <div class="reveal-l" style="display:flex; flex-direction:column; gap:20px; font-size:1rem; line-height:1.8;">
+                <p style="color:var(--text);">
+                    Ayudamos a personas, profesionales y organizaciones a
+                    <strong>comunicar mejor, ordenar ideas y crear herramientas útiles.</strong>
+                </p>
+                <p style="color:var(--text-muted);">
+                    Trabajamos con corrección literaria, ghostwriting, copywriting, biografías,
+                    prompts de IA, textos para páginas web y automatización de procesos.
+                </p>
+                <p style="color:var(--text-muted);">
+                    También desarrollamos una plataforma digital de salud y acompañamiento
+                    para personas en recuperación de consumos problemáticos, pensada para
+                    registrar avances, organizar rutinas, sostener hábitos y facilitar
+                    un seguimiento claro del proceso.
+                </p>
+            </div>
+
+            <div class="reveal-r" style="display:flex; flex-direction:column; gap:10px;">
+                <p class="mono" style="font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--text-subtle); margin-bottom:4px;">Cómo trabajamos</p>
+                <div class="pilar">
+                    <span class="mono" style="font-size:9px; color:var(--red);">01 /</span>
+                    <strong style="display:block; margin:6px 0 4px; color:var(--text);">Criterio editorial</strong>
+                    <span style="font-size:.875rem; color:var(--text-muted);">Precisión en el lenguaje. Cada palabra tiene un propósito.</span>
+                </div>
+                <div class="pilar d1">
+                    <span class="mono" style="font-size:9px; color:var(--red);">02 /</span>
+                    <strong style="display:block; margin:6px 0 4px; color:var(--text);">Claridad estratégica</strong>
+                    <span style="font-size:.875rem; color:var(--text-muted);">Ideas complejas convertidas en mensajes que funcionan.</span>
+                </div>
+                <div class="pilar d2">
+                    <span class="mono" style="font-size:9px; color:var(--red);">03 /</span>
+                    <strong style="display:block; margin:6px 0 4px; color:var(--text);">Sensibilidad humana</strong>
+                    <span style="font-size:.875rem; color:var(--text-muted);">Escuchamos antes de escribir o construir.</span>
+                </div>
+                <div class="pilar d3">
+                    <span class="mono" style="font-size:9px; color:var(--red);">04 /</span>
+                    <strong style="display:block; margin:6px 0 4px; color:var(--text);">Tecnología práctica</strong>
+                    <span style="font-size:.875rem; color:var(--text-muted);">IA y automatización al servicio de resultados reales.</span>
+                </div>
+            </div>
+        </div>
+
+        <blockquote class="reveal" style="border-left:3px solid var(--red); padding-left:24px; margin-top:48px; max-width:680px;">
+            <p class="serif" style="font-size:1.2rem; font-style:italic; color:var(--text-muted); line-height:1.7;">
+                "Combinamos criterio editorial, claridad estratégica, sensibilidad humana
+                y tecnología práctica para transformar ideas complejas en textos, sistemas
+                y soluciones que funcionen."
+            </p>
+        </blockquote>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SERVICIOS
+══════════════════════════════════════════════ -->
+<section id="servicios" style="max-width:1100px; margin:0 auto; padding:80px 24px; border-top:1px solid var(--border);">
+
+    <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:32px;">
+        <div class="reveal">
+            <div class="sec-label">Servicios</div>
+            <h2 class="serif" style="font-size:clamp(2rem,4vw,3rem); font-weight:700; color:var(--text);">
+                Lo que hacemos.
+            </h2>
+            <p style="color:var(--text-muted); margin-top:12px; max-width:480px; font-size:1rem;">
+                Escritura, edición, IA y automatización. Se contratan por separado o como proceso integrado.
+            </p>
+        </div>
+        <button class="acc-btn reveal" data-target="acc-servicios">
+            <span class="acc-icon">+</span> Ver servicios
+        </button>
+    </div>
+
+    <div class="acc-body" id="acc-servicios">
+        <div style="padding-top:32px; display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border);">
+
+            <div class="card" style="padding:32px; background:var(--bg);">
+                <div class="mono" style="font-size:9px; color:var(--red); margin-bottom:16px;">01 /</div>
+                <h3 class="serif" style="font-size:1.2rem; font-weight:700; color:var(--text); margin-bottom:10px;">Ghostwriting</h3>
+                <p style="font-size:.875rem; color:var(--text-muted); line-height:1.75; margin-bottom:20px;">
+                    Redactamos textos completos bajo tu firma. Sin crédito visible, con voz adaptada a la tuya al 100%.
+                </p>
+                <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0;">
+                    <li>→ Libros y memorias</li>
+                    <li>→ Artículos de opinión</li>
+                    <li>→ Contenido profesional</li>
+                </ul>
+            </div>
+
+            <div class="card" style="padding:32px; background:var(--bg);">
+                <div class="mono" style="font-size:9px; color:var(--red); margin-bottom:16px;">02 /</div>
+                <h3 class="serif" style="font-size:1.2rem; font-weight:700; color:var(--text); margin-bottom:10px;">Corrección literaria</h3>
+                <p style="font-size:.875rem; color:var(--text-muted); line-height:1.75; margin-bottom:20px;">
+                    Revisión de estilo, gramática, coherencia y estructura. Manuscritos listos para publicar.
+                </p>
+                <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0;">
+                    <li>→ Corrección de estilo</li>
+                    <li>→ Edición de manuscritos</li>
+                    <li>→ Revisión de estructura</li>
+                </ul>
+            </div>
+
+            <div class="card" style="padding:32px; background:var(--bg);">
+                <div class="mono" style="font-size:9px; color:var(--red); margin-bottom:16px;">03 /</div>
+                <h3 class="serif" style="font-size:1.2rem; font-weight:700; color:var(--text); margin-bottom:10px;">Copywriting</h3>
+                <p style="font-size:.875rem; color:var(--text-muted); line-height:1.75; margin-bottom:20px;">
+                    Textos para webs, landing pages y campañas. Claro, directo y pensado para convertir.
+                </p>
+                <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0;">
+                    <li>→ Textos web y landing pages</li>
+                    <li>→ Redes sociales</li>
+                    <li>→ Email marketing</li>
+                </ul>
+            </div>
+
+            <div class="card" style="padding:32px; background:var(--bg);">
+                <div class="mono" style="font-size:9px; color:var(--red); margin-bottom:16px;">04 /</div>
+                <h3 class="serif" style="font-size:1.2rem; font-weight:700; color:var(--text); margin-bottom:10px;">Biografías</h3>
+                <p style="font-size:.875rem; color:var(--text-muted); line-height:1.75; margin-bottom:20px;">
+                    Narrativas de vida y trayectoria profesional para personas, emprendedores y organizaciones.
+                </p>
+                <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0;">
+                    <li>→ Biografías personales</li>
+                    <li>→ Perfiles profesionales</li>
+                    <li>→ Historia de marca</li>
+                </ul>
+            </div>
+
+            <div class="card" style="padding:32px; background:var(--bg);">
+                <div class="mono" style="font-size:9px; color:var(--red); margin-bottom:16px;">05 /</div>
+                <h3 class="serif" style="font-size:1.2rem; font-weight:700; color:var(--text); margin-bottom:10px;">Prompts IA</h3>
+                <p style="font-size:.875rem; color:var(--text-muted); line-height:1.75; margin-bottom:20px;">
+                    Instrucciones y flujos para Claude, GPT y otros modelos. Adaptados a tu proceso o negocio.
+                </p>
+                <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0;">
+                    <li>→ Prompts para Claude / GPT</li>
+                    <li>→ Flujos de trabajo con IA</li>
+                    <li>→ Asistentes personalizados</li>
+                </ul>
+            </div>
+
+            <div class="card" style="padding:32px; background:var(--bg);">
+                <div class="mono" style="font-size:9px; color:var(--red); margin-bottom:16px;">06 /</div>
+                <h3 class="serif" style="font-size:1.2rem; font-weight:700; color:var(--text); margin-bottom:10px;">Automatización</h3>
+                <p style="font-size:.875rem; color:var(--text-muted); line-height:1.75; margin-bottom:20px;">
+                    Identificamos procesos repetitivos y los automatizamos. Más tiempo, menos fricción.
+                </p>
+                <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0;">
+                    <li>→ Automatización de tareas</li>
+                    <li>→ Integración de herramientas</li>
+                    <li>→ n8n / Make / API</li>
+                </ul>
+            </div>
+
+        </div>
+        <div style="margin-top:1px; background:var(--bg-2); border:1px solid var(--border); padding:24px 32px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px;">
+            <p style="font-size:.9rem; color:var(--text-muted);">¿No sabés qué servicio necesitás? Contanos tu proyecto y lo definimos juntos.</p>
+            <a href="#contacto" class="nav-go mono" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase; padding:10px 24px; border:1px solid var(--border-2); color:var(--text-muted); text-decoration:none; transition:all .2s; white-space:nowrap;"
+               onmouseover="this.style.borderColor='var(--text)';this.style.color='var(--text)'"
+               onmouseout="this.style.borderColor='var(--border-2)';this.style.color='var(--text-muted)'">Escribinos →</a>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     PROYECTOS
+══════════════════════════════════════════════ -->
+<section id="proyectos" style="max-width:1100px; margin:0 auto; padding:80px 24px; border-top:1px solid var(--border);">
+
+    <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:32px;">
+        <div class="reveal">
+            <div class="sec-label">Proyectos propios</div>
+            <h2 class="serif" style="font-size:clamp(2rem,4vw,3rem); font-weight:700; color:var(--text);">
+                Plataformas<br/><em>en desarrollo.</em>
+            </h2>
+            <p style="color:var(--text-muted); margin-top:12px; max-width:480px; font-size:1rem;">
+                Tres plataformas digitales propias que amplifican el alcance del estudio.
+            </p>
+        </div>
+        <button class="acc-btn reveal" data-target="acc-proyectos">
+            <span class="acc-icon">+</span> Ver proyectos
+        </button>
+    </div>
+
+    <div class="acc-body" id="acc-proyectos">
+        <div style="padding-top:32px; display:flex; flex-direction:column; gap:16px;">
+
+            <div class="card reveal" style="padding:36px;">
+                <div style="display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:24px;">
+                    <div style="flex:1; min-width:280px;">
+                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;">
+                            <span class="mono" style="font-size:9px; color:var(--red);">06 /</span>
+                            <h3 class="serif" style="font-size:1.3rem; font-weight:700; color:var(--text);">Recovery OS</h3>
+                            <span class="mono" style="font-size:9px; color:#B45309; border:1px solid #D97706; padding:2px 8px;">EN DESARROLLO</span>
+                        </div>
+                        <p style="font-size:.9rem; color:var(--text-muted); line-height:1.75; max-width:540px; margin-bottom:16px;">
+                            Plataforma digital de salud y acompañamiento para personas en recuperación
+                            de consumos problemáticos. Registro de avances, rutinas y hábitos.
+                        </p>
+                        <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0; margin-bottom:20px;">
+                            <li>→ Registro diario de estado y avances</li>
+                            <li>→ Organización de rutinas y hábitos</li>
+                            <li>→ Seguimiento clínico estructurado</li>
+                        </ul>
+                        <a href="recovery-os.html" class="nav-go mono" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); text-decoration:none; border:1px solid var(--border); padding:6px 16px; transition:all .2s; display:inline-block;"
+                           onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'"
+                           onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">Ver proyecto →</a>
+                    </div>
+                    <div class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2; text-align:right; flex-shrink:0;">
+                        <div>STACK: Python / FastAPI</div>
+                        <div>TARGET: Profesionales de salud</div>
+                        <div>MODELO: SaaS</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card reveal d1" style="padding:36px;">
+                <div style="display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:24px;">
+                    <div style="flex:1; min-width:280px;">
+                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;">
+                            <span class="mono" style="font-size:9px; color:var(--red);">07 /</span>
+                            <h3 class="serif" style="font-size:1.3rem; font-weight:700; color:var(--text);">IA Aplicada</h3>
+                            <span class="mono" style="font-size:9px; color:#B45309; border:1px solid #D97706; padding:2px 8px;">EN DESARROLLO</span>
+                        </div>
+                        <p style="font-size:.9rem; color:var(--text-muted); line-height:1.75; max-width:540px; margin-bottom:16px;">
+                            Herramientas cognitivas basadas en Anthropic / Claude. Asistentes, flujos
+                            y pipelines para procesos editoriales, clínicos y de negocio.
+                        </p>
+                        <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0; margin-bottom:20px;">
+                            <li>→ Agentes de escritura y edición</li>
+                            <li>→ Automatización con Claude API</li>
+                            <li>→ Asistentes personalizados por sector</li>
+                        </ul>
+                        <a href="ia-aplicada.html" class="nav-go mono" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); text-decoration:none; border:1px solid var(--border); padding:6px 16px; transition:all .2s; display:inline-block;"
+                           onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'"
+                           onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">Ver proyecto →</a>
+                    </div>
+                    <div class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2; text-align:right; flex-shrink:0;">
+                        <div>STACK: Claude / Anthropic API</div>
+                        <div>TARGET: Profesionales y empresas</div>
+                        <div>MODELO: B2B / SaaS</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card reveal d2" style="padding:36px;">
+                <div style="display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:space-between; gap:24px;">
+                    <div style="flex:1; min-width:280px;">
+                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap;">
+                            <span class="mono" style="font-size:9px; color:var(--red);">08 /</span>
+                            <h3 class="serif" style="font-size:1.3rem; font-weight:700; color:var(--text);">Nómade Agency</h3>
+                            <span class="mono" style="font-size:9px; color:#B45309; border:1px solid #D97706; padding:2px 8px;">EN DESARROLLO</span>
+                        </div>
+                        <p style="font-size:.9rem; color:var(--text-muted); line-height:1.75; max-width:540px; margin-bottom:16px;">
+                            Sistema de construcción y operación de agencias remotas para
+                            el viajero nómade digital. Infraestructura, marca y captación global.
+                        </p>
+                        <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0; margin-bottom:20px;">
+                            <li>→ Estructura operativa remota</li>
+                            <li>→ Branding y posicionamiento digital</li>
+                            <li>→ Captación de clientes globales</li>
+                        </ul>
+                        <a href="nomade.html" class="nav-go mono" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); text-decoration:none; border:1px solid var(--border); padding:6px 16px; transition:all .2s; display:inline-block;"
+                           onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'"
+                           onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">Ver proyecto →</a>
+                    </div>
+                    <div class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2; text-align:right; flex-shrink:0;">
+                        <div>STACK: No-code + IA</div>
+                        <div>TARGET: Freelancers / nómades</div>
+                        <div>MODELO: Comunidad + servicios</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     TERMINAL
+══════════════════════════════════════════════ -->
+<section id="terminal" style="max-width:1100px; margin:0 auto; padding:80px 24px; border-top:1px solid var(--border);">
+
+    <div class="reveal" style="margin-bottom:36px;">
+        <div class="sec-label">Terminal</div>
+        <h2 class="serif" style="font-size:clamp(2rem,4vw,3rem); font-weight:700; color:var(--text); margin-bottom:12px;">
+            Explorar el sistema.
+        </h2>
+        <p style="color:var(--text-muted); max-width:480px; font-size:1rem;">
+            Escribí un comando para navegar el estudio. Empezá con
+            <span class="mono" style="color:var(--red); font-size:.85rem;">help</span>.
+        </p>
+    </div>
+
+    <div class="term-wrap reveal">
+        <div class="term-bar">
+            <div class="term-circle" style="background:#EF4444;"></div>
+            <div class="term-circle" style="background:#F59E0B;"></div>
+            <div class="term-circle" style="background:#22C55E;"></div>
+            <span class="mono" style="font-size:10px; color:var(--text-subtle); margin-left:12px;">ib-solutions — bash</span>
+        </div>
+        <div class="term-out" id="t-out">
+            <div><span class="tr">Ignacio Bermúdez Solutions</span> — Terminal v1.0</div>
+            <div class="td">Escribí <span class="tr">help</span> para ver los comandos disponibles.</div>
+            <div>&nbsp;</div>
+        </div>
+        <div class="term-row">
+            <span class="term-ps">~$</span>
+            <input id="t-input" type="text" placeholder="comando..." autocomplete="off" spellcheck="false"/>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     CONTACTO
+══════════════════════════════════════════════ -->
+<section id="contacto" style="max-width:1100px; margin:0 auto; padding:80px 24px; border-top:1px solid var(--border);">
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start;" class="md-grid-1">
+
+        <div class="reveal-l">
+            <div class="sec-label">Contacto</div>
+            <h2 class="serif" style="font-size:clamp(2rem,4vw,3rem); font-weight:700; color:var(--text); margin-bottom:20px;">
+                Hablemos.
+            </h2>
+            <p style="color:var(--text-muted); font-size:1rem; line-height:1.75; margin-bottom:40px;">
+                Contanos en qué estás trabajando y cómo podemos ayudarte.
+                Respondemos a todos los mensajes.
+            </p>
+            <div class="mono" style="font-size:10px; display:flex; flex-direction:column; gap:16px;">
+                <div style="display:flex; gap:16px; align-items:center;">
+                    <span style="color:var(--red); min-width:48px;">EMAIL</span>
+                    <a href="mailto:ignacio@ib-os.com" style="color:var(--text-muted); text-decoration:none;" class="hover:underline">ignacio@ib-os.com</a>
+                </div>
+                <div style="display:flex; gap:16px; align-items:center;">
+                    <span style="color:var(--red); min-width:48px;">SIGNAL</span>
+                    <span style="color:var(--text-muted);">Disponible bajo solicitud</span>
+                </div>
+                <div style="display:flex; gap:16px; align-items:center;">
+                    <span style="color:var(--red); min-width:48px;">BASE</span>
+                    <span style="color:var(--text-muted);">Mendoza, AR / Florencia, IT</span>
+                </div>
+                <div style="display:flex; gap:16px; align-items:center;">
+                    <span style="color:var(--red); min-width:48px;">WEB</span>
+                    <span style="color:var(--text-muted);">sonetos.tech</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="reveal-r">
+            <!-- Reemplazá ACCESS_KEY_AQUI con tu clave de web3forms.com (gratis) -->
+            <form id="c-form" style="display:flex; flex-direction:column; gap:12px;">
+                <input type="hidden" name="access_key" value="ACCESS_KEY_AQUI">
+                <input type="hidden" name="subject"    value="Nuevo contacto desde sonetos.tech">
+                <input  type="text"  name="name"  placeholder="Tu nombre"  required class="f-field">
+                <input  type="email" name="email" placeholder="Tu email"   required class="f-field">
+                <select name="servicio" class="f-field" style="cursor:none;">
+                    <option value="" disabled selected>¿Qué necesitás?</option>
+                    <option>Ghostwriting</option>
+                    <option>Corrección literaria</option>
+                    <option>Copywriting</option>
+                    <option>Biografía</option>
+                    <option>Prompts IA</option>
+                    <option>Automatización</option>
+                    <option>Otro / No sé todavía</option>
+                </select>
+                <textarea name="message" placeholder="Contanos tu proyecto..." required rows="5" class="f-field" style="resize:none;"></textarea>
+                <div id="f-ok">✓ Mensaje enviado. Te respondemos pronto.</div>
+                <button type="submit" class="f-btn" id="f-btn">Enviar mensaje</button>
+            </form>
+        </div>
+
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════ -->
+<footer style="border-top:1px solid var(--border); padding:40px 24px;">
+    <div style="max-width:1100px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:16px;">
+        <span class="serif" style="font-size:1rem; font-weight:700; color:var(--text);">Ignacio Bermúdez Solutions</span>
+        <span class="mono" style="font-size:9px; color:var(--text-subtle); letter-spacing:.1em; text-transform:uppercase;">© 2026 — sonetos.tech</span>
+    </div>
+</footer>
+
+<!-- ══════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════ -->
+<script>
+/* ── 1. Cursor ──────────────────────────────── */
+const dot  = document.getElementById('cur-dot');
+const ring = document.getElementById('cur-ring');
+let rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+    dot.style.left = e.clientX + 'px';
+    dot.style.top  = e.clientY + 'px';
+});
+(function loop() {
+    const tx = parseFloat(dot.style.left) || 0;
+    const ty = parseFloat(dot.style.top)  || 0;
+    rx += (tx - rx) * .12;
+    ry += (ty - ry) * .12;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(loop);
+})();
+document.querySelectorAll('a,button,input,textarea,select').forEach(el => {
+    el.addEventListener('mouseenter', () => { ring.classList.add('hover'); dot.style.opacity = '0'; });
+    el.addEventListener('mouseleave', () => { ring.classList.remove('hover'); dot.style.opacity = '1'; });
+});
+
+/* ── 2. Theme toggle ────────────────────────── */
+const html = document.documentElement;
+const tBtn = document.getElementById('theme-btn');
+const saved = localStorage.getItem('ib-theme') || 'light';
+html.setAttribute('data-theme', saved);
+tBtn.textContent = saved === 'dark' ? '◑' : '◐';
+tBtn.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('ib-theme', next);
+    tBtn.textContent = next === 'dark' ? '◑' : '◐';
+});
+
+/* ── 3. Page transitions ────────────────────── */
+const veil = document.getElementById('page-veil');
+function goTo(url) {
+    veil.className = 'in';
+    setTimeout(() => location.href = url, 330);
+}
+document.querySelectorAll('a.nav-go').forEach(a => {
+    const h = a.getAttribute('href');
+    if (!h || h.startsWith('#')) return;
+    a.addEventListener('click', e => { e.preventDefault(); goTo(h); });
+});
+window.addEventListener('load', () => {
+    veil.className = 'out';
+    setTimeout(() => veil.className = '', 360);
+});
+
+/* ── 4. Typewriter ──────────────────────────── */
+const text   = document.getElementById('tw-text');
+const cursor = document.getElementById('tw-cur');
+const words  = 'Escritura precisa.\nTecnología práctica.';
+let i = 0;
+function type() {
+    if (i <= words.length) {
+        text.innerHTML = words.slice(0, i).replace(/\n/g,'<br/>');
+        i++;
+        setTimeout(type, i === 1 ? 700 : 50);
+    } else {
+        setTimeout(() => cursor.style.display = 'none', 1200);
+    }
+}
+setTimeout(type, 500);
+
+/* ── 5. Parallax ────────────────────────────── */
+const pbg = document.getElementById('parallax-bg');
+window.addEventListener('scroll', () => {
+    if (pbg) pbg.style.transform = `translateY(${window.scrollY * .12}px)`;
+}, { passive: true });
+
+/* ── 6. Scroll reveal ───────────────────────── */
+const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); obs.unobserve(e.target); } });
+}, { threshold: .12 });
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el => obs.observe(el));
+
+// Trigger hero reveals immediately
+setTimeout(() => {
+    document.querySelectorAll('#inicio .reveal').forEach(el => el.classList.add('on'));
+}, 400);
+
+/* ── 7. Animated counters ───────────────────── */
+document.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseInt(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const co = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting) return;
+        let n = 0;
+        const step = Math.max(1, Math.ceil(target / 30));
+        const t = setInterval(() => {
+            n = Math.min(n + step, target);
+            el.textContent = n + suffix;
+            if (n >= target) clearInterval(t);
+        }, 40);
+        co.unobserve(el);
+    }, { threshold: .5 });
+    co.observe(el);
+});
+
+/* ── 8. Acordeones ──────────────────────────── */
+document.querySelectorAll('.acc-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const body   = document.getElementById(btn.dataset.target);
+        const isOpen = body.classList.contains('open');
+        if (isOpen) {
+            body.style.maxHeight = body.scrollHeight + 'px';
+            requestAnimationFrame(() => {
+                body.style.maxHeight = '0';
+                body.classList.remove('open');
+                btn.classList.remove('open');
+                btn.querySelector('.acc-icon').textContent = '+';
+            });
+        } else {
+            body.classList.add('open');
+            body.style.maxHeight = body.scrollHeight + 'px';
+            btn.classList.add('open');
+            btn.querySelector('.acc-icon').textContent = '+';
+        }
+        body.addEventListener('transitionend', () => {
+            if (body.classList.contains('open')) body.style.maxHeight = 'none';
+        }, { once: true });
+    });
+});
+
+/* ── 9. Terminal ────────────────────────────── */
+const tout  = document.getElementById('t-out');
+const tinput = document.getElementById('t-input');
+const hist  = [];
+let hidx    = -1;
+
+const CMDS = {
+    help: () => `
+<div class="tr">Comandos disponibles</div>
+<div class="td">──────────────────────────────</div>
+<div><span class="tr">servicios</span>   → lista de servicios</div>
+<div><span class="tr">proyectos</span>   → plataformas en desarrollo</div>
+<div><span class="tr">quienes</span>     → sobre el estudio</div>
+<div><span class="tr">contacto</span>    → cómo comunicarse</div>
+<div><span class="tr">articulos</span>   → ir a artículos</div>
+<div><span class="tr">literatura</span>  → escritura y edición</div>
+<div><span class="tr">recovery</span>    → plataforma Recovery OS</div>
+<div><span class="tr">ia</span>          → IA Aplicada</div>
+<div><span class="tr">nomade</span>      → Nómade Agency</div>
+<div><span class="tr">stack</span>       → tecnologías usadas</div>
+<div><span class="tr">clear</span>       → limpiar pantalla</div>
+<div>&nbsp;</div>`,
+
+    servicios: () => `
+<div class="tr">// Servicios</div>
+<div>01  Ghostwriting</div>
+<div>02  Corrección literaria</div>
+<div>03  Copywriting</div>
+<div>04  Biografías</div>
+<div>05  Prompts IA</div>
+<div>06  Automatización de procesos</div>
+<div class="td">→ <a href="#servicios" style="color:inherit;text-decoration:underline;">ver detalle ↑</a></div>
+<div>&nbsp;</div>`,
+
+    proyectos: () => `
+<div class="tr">// Plataformas propias [EN DESARROLLO]</div>
+<div>06  Recovery OS    — salud / recuperación de adicciones</div>
+<div>07  IA Aplicada    — herramientas Anthropic / Claude</div>
+<div>08  Nómade Agency  — agencias para viajeros remotos</div>
+<div>&nbsp;</div>`,
+
+    quienes: () => `
+<div class="tr">// Ignacio Bermúdez Solutions</div>
+<div class="td">Estudio de escritura, edición, IA y soluciones digitales.</div>
+<div>Criterio editorial · Claridad estratégica</div>
+<div>Sensibilidad humana · Tecnología práctica</div>
+<div class="td">Mendoza, AR / Florencia, IT — sonetos.tech</div>
+<div>&nbsp;</div>`,
+
+    contacto: () => `
+<div class="tr">// Contacto</div>
+<div>EMAIL  → ignacio@ib-os.com</div>
+<div>SIGNAL → disponible bajo solicitud</div>
+<div>FORM   → <a href="#contacto" style="color:inherit;text-decoration:underline;">formulario ↑</a></div>
+<div>&nbsp;</div>`,
+
+    articulos: () => { setTimeout(() => goTo('articulos.html'), 500); return `<div class="td">→ Navegando a artículos...</div><div>&nbsp;</div>`; },
+    literatura: () => { setTimeout(() => goTo('literatura.html'), 500); return `<div class="td">→ Navegando a Escritura y Edición...</div><div>&nbsp;</div>`; },
+    recovery:   () => { setTimeout(() => goTo('recovery-os.html'), 500); return `<div class="td">→ Navegando a Recovery OS...</div><div>&nbsp;</div>`; },
+    ia:         () => { setTimeout(() => goTo('ia-aplicada.html'), 500); return `<div class="td">→ Navegando a IA Aplicada...</div><div>&nbsp;</div>`; },
+    nomade:     () => { setTimeout(() => goTo('nomade.html'), 500); return `<div class="td">→ Navegando a Nómade Agency...</div><div>&nbsp;</div>`; },
+
+    stack: () => `
+<div class="tr">// Stack tecnológico</div>
+<div>LENGUAJES    Python · JavaScript · HTML / CSS</div>
+<div>IA           Claude (Anthropic) · GPT</div>
+<div>BACKEND      FastAPI · n8n · Make</div>
+<div>HARDWARE     ESP32</div>
+<div>INFRA        Hostinger (sonetos.tech) · GitHub</div>
+<div>&nbsp;</div>`,
+
+    clear: () => { tout.innerHTML = ''; return null; },
+};
+
+function run(cmd) {
+    const c = cmd.trim().toLowerCase();
+    if (c !== 'clear') tout.innerHTML += `<div><span class="td">~$</span> <span class="tc">${cmd}</span></div>`;
+    if (!c) tout.innerHTML += '<div>&nbsp;</div>';
+    else if (CMDS[c]) { const r = CMDS[c](); if (r) tout.innerHTML += r; }
+    else tout.innerHTML += `<div class="td">Comando no reconocido: <span class="tr">${c}</span>. Probá <span class="tr">help</span>.</div><div>&nbsp;</div>`;
+    tout.scrollTop = tout.scrollHeight;
+}
+
+tinput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+        const v = tinput.value;
+        if (v.trim()) hist.unshift(v);
+        hidx = -1; run(v); tinput.value = '';
+    }
+    if (e.key === 'ArrowUp')   { hidx = Math.min(hidx + 1, hist.length - 1); tinput.value = hist[hidx] || ''; }
+    if (e.key === 'ArrowDown') { hidx = Math.max(hidx - 1, -1); tinput.value = hidx < 0 ? '' : hist[hidx]; }
+});
+document.querySelector('.term-wrap').addEventListener('click', () => tinput.focus());
+
+/* ── 10. Formulario ─────────────────────────── */
+document.getElementById('c-form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('f-btn');
+    const ok  = document.getElementById('f-ok');
+    btn.disabled = true; btn.textContent = 'Enviando...';
+    try {
+        const res  = await fetch('https://api.web3forms.com/submit', { method:'POST', body: new FormData(e.target) });
+        const json = await res.json();
+        if (json.success) { ok.style.display = 'block'; e.target.reset(); btn.textContent = 'Enviado ✓'; }
+        else throw 0;
+    } catch { btn.disabled = false; btn.textContent = 'Error — intentá de nuevo'; }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escritura y Edición — Ignacio Bermúdez Solutions</title>
+    <meta name="description" content="Ghostwriting, corrección literaria y biografías. Escribimos con tu voz, para tu lector, bajo tu firma.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --bg:#FEFEFE; --bg-2:#F7F5F2; --bg-3:#EDEAE6;
+            --text:#111111; --text-muted:#666666; --text-subtle:#AAAAAA;
+            --border:#E5E5E5; --border-2:#CCCCCC;
+            --red:#B91C1C; --red-dim:rgba(185,28,28,0.07);
+            --shadow-sm:0 1px 3px rgba(0,0,0,0.07);
+        }
+        [data-theme="dark"] {
+            --bg:#111111; --bg-2:#1A1A1A; --bg-3:#242424;
+            --text:#F0F0F0; --text-muted:#999999; --text-subtle:#555555;
+            --border:#2A2A2A; --border-2:#3C3C3C;
+            --red:#DC2626; --red-dim:rgba(220,38,38,0.10);
+            --shadow-sm:0 1px 3px rgba(0,0,0,0.3);
+        }
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family:'Inter',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; transition:background .3s,color .3s; }
+
+        * { cursor: none !important; }
+        #cursor-dot { position:fixed; width:6px; height:6px; background:var(--red); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); }
+        #cursor-ring { position:fixed; width:28px; height:28px; border:1.5px solid var(--text-subtle); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:width .2s,height .2s,border-color .2s; }
+
+        .serif { font-family:'Playfair Display',Georgia,serif; }
+        .mono  { font-family:'Fira Code','Courier New',monospace; }
+
+        #main-nav { position:fixed; top:0; left:0; right:0; z-index:500; background:var(--bg); border-bottom:1px solid var(--border); transition:background .3s,border-color .3s; }
+        .nav-inner { max-width:1100px; margin:0 auto; padding:0 1.5rem; height:60px; display:flex; align-items:center; justify-content:space-between; }
+        .nav-logo { font-family:'Playfair Display',serif; font-size:1.05rem; font-style:italic; color:var(--text); text-decoration:none; }
+        .nav-links { display:flex; align-items:center; gap:2rem; list-style:none; }
+        .nav-links a { font-family:'Fira Code',monospace; font-size:.65rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); text-decoration:none; transition:color .2s; }
+        .nav-links a:hover { color:var(--text); }
+        #theme-toggle { background:none; border:1px solid var(--border); color:var(--text-muted); font-family:'Fira Code',monospace; font-size:.6rem; letter-spacing:.1em; text-transform:uppercase; padding:4px 10px; transition:border-color .2s,color .2s; }
+        #theme-toggle:hover { border-color:var(--border-2); color:var(--text); }
+        #nav-toggle { display:none; background:none; border:none; color:var(--text-muted); font-size:1.25rem; }
+        @media(max-width:768px) {
+            #nav-toggle { display:block; }
+            #nav-menu { display:none; position:absolute; top:60px; left:0; right:0; background:var(--bg); border-bottom:1px solid var(--border); padding:1.5rem; flex-direction:column; gap:1.5rem; }
+            #nav-menu.open { display:flex; }
+            .nav-links { flex-direction:column; align-items:flex-start; gap:1.25rem; }
+        }
+
+        #page-transition { position:fixed; inset:0; background:var(--red); z-index:9000; transform:scaleX(0); transform-origin:left; pointer-events:none; }
+
+        /* ── Page content ── */
+        .page-header { max-width:1100px; margin:0 auto; padding:7rem 1.5rem 3rem; border-bottom:1px solid var(--border); }
+        .page-header .label { font-family:'Fira Code',monospace; font-size:.65rem; letter-spacing:.15em; text-transform:uppercase; color:var(--red); display:block; margin-bottom:1.25rem; }
+        .page-header h1 { font-family:'Playfair Display',serif; font-size:clamp(2.5rem,5vw,4rem); font-style:italic; font-weight:700; color:var(--text); letter-spacing:-.02em; line-height:1.1; margin-bottom:1.25rem; }
+        .page-header .bajada { color:var(--text-muted); font-size:1.05rem; line-height:1.7; max-width:560px; }
+
+        .inner { max-width:1100px; margin:0 auto; padding:0 1.5rem; }
+
+        /* intro section */
+        .intro-section { padding:4rem 0; border-bottom:1px solid var(--border); }
+        .intro-grid { display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:start; }
+        @media(max-width:768px) { .intro-grid { grid-template-columns:1fr; gap:32px; } }
+        .intro-text p { color:var(--text-muted); font-size:1rem; line-height:1.8; margin-bottom:1.25rem; }
+        .intro-text p:last-child { margin-bottom:0; }
+        .intro-text strong { color:var(--text); font-weight:600; }
+
+        blockquote.pull {
+            border-left:2px solid var(--red);
+            padding:0.5rem 1.5rem;
+            font-family:'Playfair Display',serif;
+            font-style:italic; font-size:1.15rem;
+            color:var(--text-muted); line-height:1.65;
+        }
+
+        /* service cards */
+        .services-section { padding:4rem 0; border-bottom:1px solid var(--border); }
+        .section-label { font-family:'Fira Code',monospace; font-size:.65rem; letter-spacing:.15em; text-transform:uppercase; color:var(--red); display:block; margin-bottom:1.25rem; }
+        .section-title { font-family:'Playfair Display',serif; font-size:1.75rem; font-weight:700; color:var(--text); margin-bottom:2rem; }
+        .cards-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); }
+        @media(max-width:768px) { .cards-grid { grid-template-columns:1fr; } }
+        .svc-card { background:var(--bg); padding:2rem; transition:background .2s; }
+        .svc-card:hover { background:var(--bg-2); }
+        .svc-num { font-family:'Fira Code',monospace; font-size:.6rem; color:var(--red); margin-bottom:1rem; display:block; }
+        .svc-card h3 { font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; color:var(--text); margin-bottom:.75rem; }
+        .svc-card p { font-size:.875rem; color:var(--text-muted); line-height:1.75; margin-bottom:1.25rem; }
+        .svc-list { list-style:none; padding:0; }
+        .svc-list li { font-family:'Fira Code',monospace; font-size:.6rem; color:var(--text-subtle); line-height:2.4; letter-spacing:.05em; }
+        .svc-list li::before { content:'→ '; color:var(--red); }
+
+        /* process */
+        .process-section { padding:4rem 0; border-bottom:1px solid var(--border); }
+        .steps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); margin-top:2rem; }
+        @media(max-width:768px) { .steps-grid { grid-template-columns:1fr; } }
+        .step { background:var(--bg); padding:2rem; }
+        .step-n { font-family:'Fira Code',monospace; font-size:2rem; font-weight:500; color:var(--border-2); line-height:1; margin-bottom:1rem; }
+        .step h4 { font-size:1rem; font-weight:600; color:var(--text); margin-bottom:.5rem; }
+        .step p { font-size:.875rem; color:var(--text-muted); line-height:1.7; }
+
+        /* CTA */
+        .cta-section { padding:4rem 0 6rem; text-align:center; }
+        .cta-section p { color:var(--text-muted); font-size:1rem; margin-bottom:2rem; }
+        .cta-btn { display:inline-block; font-family:'Fira Code',monospace; font-size:.65rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text); text-decoration:none; border:1px solid var(--border-2); padding:.75rem 2rem; transition:border-color .2s,color .2s,background .2s; }
+        .cta-btn:hover { border-color:var(--red); color:var(--red); background:var(--red-dim); }
+
+        footer { border-top:1px solid var(--border); padding:2.5rem 1.5rem; }
+        .footer-inner { max-width:1100px; margin:0 auto; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; }
+        .footer-logo { font-family:'Playfair Display',serif; font-size:.95rem; font-style:italic; color:var(--text); text-decoration:none; }
+        .footer-email { font-family:'Fira Code',monospace; font-size:.65rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text-subtle); text-decoration:none; transition:color .2s; }
+        .footer-email:hover { color:var(--text); }
+
+        @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+        .fade { animation:fadeUp .5s ease both; }
+        .fade-1 { animation-delay:.1s; }
+        .fade-2 { animation-delay:.2s; }
+    </style>
+</head>
+<body>
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div id="page-transition"></div>
+
+<!-- NAV -->
+<nav id="main-nav">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo">Ignacio Bermúdez Solutions</a>
+        <div id="nav-menu">
+            <ul class="nav-links">
+                <li><a href="index.html#inicio">Inicio</a></li>
+                <li><a href="index.html#quienes">Quiénes somos</a></li>
+                <li><a href="index.html#servicios">Servicios</a></li>
+                <li><a href="index.html#proyectos">Proyectos</a></li>
+                <li><a href="articulos.html">Artículos</a></li>
+                <li><a href="index.html#contacto">Contacto</a></li>
+            </ul>
+            <button id="theme-toggle">☀ Claro</button>
+        </div>
+        <button id="nav-toggle" aria-label="Menú">☰</button>
+    </div>
+</nav>
+
+<!-- HEADER -->
+<header class="page-header fade">
+    <span class="label">// escritura y edición</span>
+    <h1>Escribir es pensar.</h1>
+    <p class="bajada">
+        Ghostwriting, corrección literaria y biografías. Escribimos con tu voz,
+        para tu lector, bajo tu firma. El texto como herramienta de pensamiento.
+    </p>
+</header>
+
+<!-- INTRO -->
+<section class="intro-section">
+    <div class="inner">
+        <div class="intro-grid">
+            <div class="intro-text fade fade-1">
+                <p>
+                    La escritura no es solo comunicar. Es <strong>ordenar el pensamiento,
+                    construir autoridad y dejar una marca</strong> que ninguna imagen puede reemplazar.
+                </p>
+                <p>
+                    En Ignacio Bermúdez Solutions trabajamos con personas que tienen ideas claras
+                    pero necesitan que alguien las convierta en texto que funcione: libros, artículos,
+                    páginas web, memorias, perfiles profesionales.
+                </p>
+                <p>
+                    Trabajamos con discreción. El crédito es tuyo. El resultado, también.
+                </p>
+            </div>
+            <blockquote class="pull fade fade-2">
+                "El ghostwriter desaparece en el texto del otro. No por cobardía, sino por oficio.
+                La precisión es el único ego que nos importa."
+            </blockquote>
+        </div>
+    </div>
+</section>
+
+<!-- SERVICIOS -->
+<section class="services-section">
+    <div class="inner">
+        <span class="section-label">// servicios de escritura</span>
+        <h2 class="section-title">Lo que hacemos.</h2>
+        <div class="cards-grid">
+
+            <div class="svc-card">
+                <span class="svc-num">01 /</span>
+                <h3>Ghostwriting</h3>
+                <p>Redactamos textos completos bajo tu firma. Sin crédito visible, con voz adaptada a la tuya al 100%.</p>
+                <ul class="svc-list">
+                    <li>Libros y memorias</li>
+                    <li>Artículos de opinión</li>
+                    <li>Contenido profesional</li>
+                    <li>Newsletters y blogs</li>
+                </ul>
+            </div>
+
+            <div class="svc-card">
+                <span class="svc-num">02 /</span>
+                <h3>Corrección literaria</h3>
+                <p>Revisión de estilo, gramática, coherencia y estructura. Manuscritos listos para publicar o presentar.</p>
+                <ul class="svc-list">
+                    <li>Corrección de estilo</li>
+                    <li>Edición de manuscritos</li>
+                    <li>Revisión de estructura</li>
+                    <li>Consistencia de voz</li>
+                </ul>
+            </div>
+
+            <div class="svc-card">
+                <span class="svc-num">03 /</span>
+                <h3>Biografías</h3>
+                <p>Narrativas de vida y trayectoria profesional para personas, emprendedores y organizaciones.</p>
+                <ul class="svc-list">
+                    <li>Biografías personales</li>
+                    <li>Perfiles profesionales</li>
+                    <li>Historia de marca</li>
+                    <li>Memorias corporativas</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- PROCESO -->
+<section class="process-section">
+    <div class="inner">
+        <span class="section-label">// cómo trabajamos</span>
+        <h2 class="section-title">El proceso.</h2>
+        <div class="steps-grid">
+            <div class="step">
+                <div class="step-n">01</div>
+                <h4>Escucha</h4>
+                <p>Una conversación inicial — en persona, por videollamada o por escrito — para entender tu voz, tu objetivo y tu lector. No empezamos a escribir antes de escuchar.</p>
+            </div>
+            <div class="step">
+                <div class="step-n">02</div>
+                <h4>Borrador</h4>
+                <p>Redactamos el primer borrador y lo compartimos. El proceso incluye tantas rondas de revisión como sean necesarias hasta que el texto sea exactamente lo que querés.</p>
+            </div>
+            <div class="step">
+                <div class="step-n">03</div>
+                <h4>Entrega</h4>
+                <p>El archivo final en el formato que necesitás: Word, PDF, HTML. El texto es tuyo. No guardamos copias ni reclamamos crédito.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="inner">
+        <p>¿Tenés un proyecto de escritura? Contanos de qué se trata.</p>
+        <a href="index.html#contacto" class="cta-btn">Escribinos →</a>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-inner">
+        <a href="index.html" class="footer-logo">Ignacio Bermúdez Solutions</a>
+        <a href="mailto:ignacio@ib-os.com" class="footer-email">ignacio@ib-os.com</a>
+    </div>
+</footer>
+
+<script>
+const dot=document.getElementById('cursor-dot'), ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+(function a(){dot.style.left=mx+'px';dot.style.top=my+'px';rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+
+const html=document.documentElement, toggle=document.getElementById('theme-toggle');
+const stored=localStorage.getItem('ib-theme')||'light';
+html.setAttribute('data-theme',stored);
+toggle.textContent=stored==='dark'?'☀ Claro':'☾ Oscuro';
+toggle.addEventListener('click',()=>{
+    const next=html.getAttribute('data-theme')==='light'?'dark':'light';
+    html.setAttribute('data-theme',next);localStorage.setItem('ib-theme',next);
+    toggle.textContent=next==='dark'?'☀ Claro':'☾ Oscuro';
+});
+
+document.getElementById('nav-toggle').addEventListener('click',()=>{
+    document.getElementById('nav-menu').classList.toggle('open');
+});
+
+const overlay=document.getElementById('page-transition');
+document.querySelectorAll('a[href]').forEach(link=>{
+    const href=link.getAttribute('href');
+    if(!href||href.startsWith('#')||href.startsWith('mailto')||href.startsWith('http'))return;
+    link.addEventListener('click',e=>{
+        e.preventDefault();
+        overlay.style.transition='transform .35s cubic-bezier(.76,0,.24,1)';
+        overlay.style.transformOrigin='left';overlay.style.transform='scaleX(1)';
+        setTimeout(()=>{window.location.href=href;},360);
+    });
+});
+window.addEventListener('pageshow',()=>{
+    overlay.style.transition='none';overlay.style.transformOrigin='right';overlay.style.transform='scaleX(1)';
+    requestAnimationFrame(()=>{overlay.style.transition='transform .35s cubic-bezier(.76,0,.24,1)';overlay.style.transform='scaleX(0)';});
+});
+</script>
+</body>
+</html>

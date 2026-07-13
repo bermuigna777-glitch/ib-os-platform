@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artículos — Ignacio Bermúdez Solutions</title>
+    <meta name="description" content="Escritura, inteligencia artificial, salud, vida nómade y todo lo que no cabe en una categoría fija. Ensayos sin periodicidad ni formato obligado.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* ── Variables de tema ─────────────────────────── */
+        :root {
+            --bg:          #FEFEFE;
+            --bg-2:        #F7F5F2;
+            --bg-3:        #EDEAE6;
+            --text:        #111111;
+            --text-muted:  #666666;
+            --text-subtle: #AAAAAA;
+            --border:      #E5E5E5;
+            --border-2:    #CCCCCC;
+            --red:         #B91C1C;
+            --red-dim:     rgba(185,28,28,0.07);
+            --shadow-sm:   0 1px 3px rgba(0,0,0,0.07);
+            --shadow-md:   0 4px 16px rgba(0,0,0,0.09);
+        }
+        [data-theme="dark"] {
+            --bg:          #111111;
+            --bg-2:        #1A1A1A;
+            --bg-3:        #242424;
+            --text:        #F0F0F0;
+            --text-muted:  #999999;
+            --text-subtle: #555555;
+            --border:      #2A2A2A;
+            --border-2:    #3C3C3C;
+            --red:         #DC2626;
+            --red-dim:     rgba(220,38,38,0.10);
+            --shadow-sm:   0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md:   0 4px 16px rgba(0,0,0,0.4);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* ── Cursor personalizado ─────────────────────── */
+        * { cursor: none !important; }
+        #cursor-dot {
+            position: fixed;
+            width: 6px; height: 6px;
+            background: var(--red);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%,-50%);
+            transition: transform 0.1s ease, opacity 0.2s ease;
+        }
+        #cursor-ring {
+            position: fixed;
+            width: 28px; height: 28px;
+            border: 1.5px solid var(--text-subtle);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%,-50%);
+            transition: width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
+        }
+        a:hover ~ #cursor-ring, button:hover ~ #cursor-ring { width: 40px; height: 40px; border-color: var(--red); }
+
+        /* ── Tipografía ────────────────────────────────── */
+        .serif    { font-family: 'Playfair Display', Georgia, serif; }
+        .mono     { font-family: 'Fira Code', 'Courier New', monospace; }
+
+        /* ── Nav ───────────────────────────────────────── */
+        #main-nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .nav-inner {
+            max-width: 1100px; margin: 0 auto;
+            padding: 0 1.5rem;
+            height: 60px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem; font-style: italic;
+            color: var(--text);
+            text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+        .nav-links {
+            display: flex; align-items: center; gap: 2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem; letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--text); }
+        .nav-links a.active { border-bottom: 1px solid var(--red); padding-bottom: 2px; }
+
+        /* Theme toggle */
+        #theme-toggle {
+            background: none; border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-family: 'Fira Code', monospace; font-size: 0.6rem;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 4px 10px;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+        #theme-toggle:hover { border-color: var(--border-2); color: var(--text); }
+
+        /* Mobile nav toggle */
+        #nav-toggle {
+            display: none; background: none; border: none;
+            color: var(--text-muted); font-size: 1.25rem;
+        }
+        @media (max-width: 768px) {
+            #nav-toggle { display: block; }
+            #nav-menu { display: none; position: absolute; top: 60px; left: 0; right: 0;
+                background: var(--bg); border-bottom: 1px solid var(--border);
+                padding: 1.5rem; flex-direction: column; gap: 1.5rem; }
+            #nav-menu.open { display: flex; }
+            .nav-links { flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+        }
+
+        /* ── Page transition ───────────────────────────── */
+        #page-transition {
+            position: fixed; inset: 0; background: var(--red);
+            z-index: 9000; transform: scaleX(0); transform-origin: left;
+            pointer-events: none;
+        }
+
+        /* ── Header ───────────────────────────────────── */
+        .page-header {
+            max-width: 1100px; margin: 0 auto;
+            padding: 7rem 1.5rem 3rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .page-header .label {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem; letter-spacing: 0.15em;
+            text-transform: uppercase; color: var(--red);
+            display: block; margin-bottom: 1.25rem;
+        }
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-style: italic; font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 1.25rem;
+        }
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 1rem; line-height: 1.7;
+            max-width: 540px;
+        }
+
+        /* ── Search + Filters ─────────────────────────── */
+        .search-bar {
+            max-width: 1100px; margin: 0 auto;
+            padding: 2rem 1.5rem;
+            display: flex; flex-wrap: wrap; gap: 1rem;
+            align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+        .search-wrapper {
+            position: relative; width: 100%; max-width: 340px;
+        }
+        #search-input {
+            width: 100%;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            padding: 0.55rem 2.5rem 0.55rem 0.9rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        #search-input:focus { border-color: var(--border-2); }
+        #search-input::placeholder { color: var(--text-subtle); }
+        .search-icon {
+            position: absolute; right: 0.75rem; top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-subtle);
+            font-family: 'Fira Code', monospace; font-size: 0.65rem;
+            pointer-events: none;
+        }
+
+        /* Category filters */
+        .cat-filters {
+            display: flex; flex-wrap: wrap; gap: 0.5rem;
+        }
+        .cat-btn {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.6rem; letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid var(--border);
+            padding: 5px 14px;
+            background: none; color: var(--text-subtle);
+            transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+        }
+        .cat-btn:hover { border-color: var(--border-2); color: var(--text-muted); }
+        .cat-btn.active { border-color: var(--red); color: var(--text); background: var(--red-dim); }
+
+        /* ── Counter bar ──────────────────────────────── */
+        .count-bar {
+            max-width: 1100px; margin: 0 auto;
+            padding: 1rem 1.5rem;
+        }
+        .count-bar p {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem; letter-spacing: 0.12em;
+            text-transform: uppercase; color: var(--text-subtle);
+        }
+        .count-bar span { color: var(--red); }
+
+        /* ── Grid de artículos ────────────────────────── */
+        #articles-grid {
+            max-width: 1100px; margin: 0 auto;
+            padding: 0 1.5rem 5rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1px;
+            background: var(--border);
+        }
+
+        /* Cards */
+        .article-card {
+            background: var(--bg);
+            padding: 1.75rem;
+            display: flex; flex-direction: column;
+            transition: background 0.2s ease;
+            text-decoration: none; color: inherit;
+        }
+        .article-card:hover { background: var(--bg-2); }
+
+        .card-meta {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .card-cat {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.58rem; letter-spacing: 0.12em;
+            text-transform: uppercase; color: var(--red);
+            border: 1px solid color-mix(in srgb, var(--red) 30%, transparent);
+            padding: 2px 7px;
+        }
+        .card-date {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.6rem; color: var(--text-subtle);
+        }
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem; font-weight: 700;
+            color: var(--text); line-height: 1.35;
+            margin-bottom: 0.75rem;
+            transition: color 0.2s ease;
+        }
+        .article-card:hover .card-title { color: var(--red); }
+        .card-excerpt {
+            font-size: 0.82rem; line-height: 1.65;
+            color: var(--text-muted); flex: 1;
+            margin-bottom: 1.25rem;
+        }
+        .card-cta {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.6rem; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--text-subtle);
+            transition: color 0.2s ease;
+        }
+        .article-card:hover .card-cta { color: var(--red); }
+
+        /* No results */
+        #no-results {
+            display: none; text-align: center;
+            padding: 5rem 1.5rem;
+            max-width: 1100px; margin: 0 auto;
+        }
+        #no-results p {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--text-subtle);
+        }
+
+        /* ── Footer ───────────────────────────────────── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2.5rem 1.5rem;
+        }
+        .footer-inner {
+            max-width: 1100px; margin: 0 auto;
+            display: flex; flex-wrap: wrap;
+            align-items: center; justify-content: space-between;
+            gap: 1rem;
+        }
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 0.95rem; font-style: italic;
+            color: var(--text); text-decoration: none;
+        }
+        .footer-email {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem; letter-spacing: 0.1em;
+            text-transform: uppercase; color: var(--text-subtle);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        .footer-email:hover { color: var(--text); }
+
+        /* ── Fade in animation ─────────────────────────── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .article-card { animation: fadeUp 0.3s ease both; }
+    </style>
+</head>
+<body>
+
+    <!-- Cursor personalizado -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+
+    <!-- Transición de página -->
+    <div id="page-transition"></div>
+
+    <!-- NAV ─────────────────────────────────────────── -->
+    <nav id="main-nav">
+        <div class="nav-inner">
+            <a href="index.html" class="nav-logo">Ignacio Bermúdez Solutions</a>
+
+            <div id="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="index.html#inicio">Inicio</a></li>
+                    <li><a href="index.html#quienes">Quiénes somos</a></li>
+                    <li><a href="index.html#servicios">Servicios</a></li>
+                    <li><a href="index.html#proyectos">Proyectos</a></li>
+                    <li><a href="articulos.html" class="active">Artículos</a></li>
+                    <li><a href="index.html#contacto">Contacto</a></li>
+                </ul>
+                <button id="theme-toggle">☀ Claro</button>
+            </div>
+
+            <button id="nav-toggle" aria-label="Menú">☰</button>
+        </div>
+    </nav>
+
+    <!-- HEADER ──────────────────────────────────────── -->
+    <header class="page-header">
+        <span class="label">// artículos y ensayos</span>
+        <h1>Ideas libres.</h1>
+        <p>Escritura, inteligencia artificial, salud, vida nómade y todo lo que no cabe en una categoría fija. Ensayos sin periodicidad ni formato obligado.</p>
+    </header>
+
+    <!-- SEARCH + FILTERS ────────────────────────────── -->
+    <div class="search-bar">
+        <div class="search-wrapper">
+            <input id="search-input" type="text" placeholder="Buscar artículo..." autocomplete="off">
+            <span class="search-icon">⌘K</span>
+        </div>
+        <div class="cat-filters" id="cat-filters">
+            <button class="cat-btn active" data-cat="todos">Todos</button>
+            <button class="cat-btn" data-cat="escritura">Escritura</button>
+            <button class="cat-btn" data-cat="ia">IA</button>
+            <button class="cat-btn" data-cat="salud">Salud</button>
+            <button class="cat-btn" data-cat="nomade">Nómade</button>
+            <button class="cat-btn" data-cat="tecnologia">Tecnología</button>
+            <button class="cat-btn" data-cat="cultura">Cultura</button>
+        </div>
+    </div>
+
+    <!-- COUNTER ─────────────────────────────────────── -->
+    <div class="count-bar">
+        <p><span id="count">0</span> artículos</p>
+    </div>
+
+    <!-- GRID ────────────────────────────────────────── -->
+    <main>
+        <div id="articles-grid"></div>
+        <div id="no-results">
+            <p>Sin resultados para esa búsqueda.</p>
+        </div>
+    </main>
+
+    <!-- FOOTER ──────────────────────────────────────── -->
+    <footer>
+        <div class="footer-inner">
+            <a href="index.html" class="footer-logo">Ignacio Bermúdez Solutions</a>
+            <a href="mailto:ignacio@ib-os.com" class="footer-email">ignacio@ib-os.com</a>
+        </div>
+    </footer>
+
+    <script>
+    // ─────────────────────────────────────────────────────────
+    //  BASE DE ARTÍCULOS
+    //  Para agregar artículos: añadir objetos a este array.
+    //  Campos: titulo, categoria, fecha, resumen, url
+    // ─────────────────────────────────────────────────────────
+    const ARTICULOS = [
+        {
+            titulo: "Escribir sin firma: el fantasma como oficio",
+            categoria: "escritura",
+            fecha: "2026-06-10",
+            resumen: "El ghostwriting no es traición a la autoría. Es una forma de servicio, de precisión y de desaparición voluntaria en el texto del otro.",
+            url: "articulo.html"
+        },
+        {
+            titulo: "Claude, Anthropic y el futuro del texto asistido",
+            categoria: "ia",
+            fecha: "2026-05-28",
+            resumen: "Los modelos de lenguaje no reemplazan la escritura: la amplían. Una mirada honesta sobre lo que cambia y lo que no cuando usás IA para escribir.",
+            url: "articulo.html"
+        },
+        {
+            titulo: "Recuperación y registro: por qué anotar cada día importa",
+            categoria: "salud",
+            fecha: "2026-05-14",
+            resumen: "En los procesos de recuperación de consumos problemáticos, el registro diario no es burocracia. Es evidencia, es brújula y es memoria cuando la memoria falla.",
+            url: "articulo.html"
+        },
+        {
+            titulo: "Mendoza a Florencia: trabajar mientras el mundo cambia de fondo",
+            categoria: "nomade",
+            fecha: "2026-04-30",
+            resumen: "Reflexiones sobre construir un estudio digital que funcione igual desde la cordillera que desde la Toscana. Lo que se gana, lo que se pierde, lo que se aprende.",
+            url: "articulo.html"
+        },
+        {
+            titulo: "Automatizar no es rendirse: el arte de delegar a las máquinas",
+            categoria: "tecnologia",
+            fecha: "2026-04-18",
+            resumen: "La automatización de procesos no es pereza intelectual. Es la decisión de concentrar energía humana donde realmente hace falta.",
+            url: "articulo.html"
+        },
+        {
+            titulo: "El copy que no vende: sobre la honestidad en el texto comercial",
+            categoria: "escritura",
+            fecha: "2026-04-05",
+            resumen: "Hay un tipo de copywriting que empuja, manipula y cansa. Y hay otro que explica, respeta y convence. La diferencia es de ética antes que de técnica.",
+            url: "articulo.html"
+        },
+        {
+            titulo: "Prompts como poesía: la instrucción como género literario",
+            categoria: "ia",
+            fecha: "2026-03-22",
+            resumen: "Diseñar un prompt es un acto de escritura. Tiene ritmo, intención, economía de palabras. Y cuando funciona, parece magia aunque sea solo claridad.",
+            url: "articulo.html"
+        },
+        {
+            titulo: "Vivir sin dirección fija: identidad y pertenencia en el nomadismo digital",
+            categoria: "nomade",
+            fecha: "2026-03-10",
+            resumen: "El nómade digital no huye. Elige. Pero elegir sin ancla fija plantea preguntas sobre identidad que los libros de productividad no responden.",
+            url: "articulo.html"
+        },
+        {
+            titulo: "Leer en tiempos de distracción infinita",
+            categoria: "cultura",
+            fecha: "2026-02-25",
+            resumen: "No leemos menos porque seamos más tontos. Leemos menos porque el diseño del entorno digital está optimizado para interrumpir. Algunas hipótesis y prácticas.",
+            url: "articulo.html"
+        },
+        {
+            titulo: "FastAPI para escritores: construir herramientas propias sin ser programador",
+            categoria: "tecnologia",
+            fecha: "2026-02-12",
+            resumen: "Una API propia, aunque sea sencilla, cambia la relación con las herramientas digitales. Crónica de un proceso de aprendizaje sin formación técnica formal.",
+            url: "articulo.html"
+        },
+        {
+            titulo: "La biografía como espejo: escribir la vida del otro",
+            categoria: "escritura",
+            fecha: "2026-01-30",
+            resumen: "Escribir una biografía es un acto de escucha antes que de escritura. El biógrafo desaparece. El relato emerge. Pero algo del escritor siempre queda.",
+            url: "articulo.html"
+        },
+        {
+            titulo: "Hábito, rutina y recaída: lo que la ciencia dice sobre el cambio",
+            categoria: "salud",
+            fecha: "2026-01-15",
+            resumen: "Cambiar un comportamiento no es un acto de voluntad puro. Es un proceso con biología, contexto y tiempo. Algunas claves para entender por qué cuesta tanto.",
+            url: "articulo.html"
+        }
+    ];
+
+    const CATEGORIAS = {
+        escritura:  "Escritura",
+        ia:         "IA",
+        salud:      "Salud",
+        nomade:     "Nómade",
+        tecnologia: "Tecnología",
+        cultura:    "Cultura"
+    };
+
+    function formatFecha(iso) {
+        const [y, m, d] = iso.split('-');
+        const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        return `${d} ${meses[parseInt(m)-1]} ${y}`;
+    }
+
+    function renderCard(art, idx) {
+        return `
+        <a href="${art.url}" class="article-card" style="animation-delay:${idx * 40}ms">
+            <div class="card-meta">
+                <span class="card-cat">${CATEGORIAS[art.categoria] || art.categoria}</span>
+                <span class="card-date">${formatFecha(art.fecha)}</span>
+            </div>
+            <h2 class="card-title">${art.titulo}</h2>
+            <p class="card-excerpt">${art.resumen}</p>
+            <span class="card-cta">Leer &rarr;</span>
+        </a>`;
+    }
+
+    function render(lista) {
+        const grid   = document.getElementById('articles-grid');
+        const noRes  = document.getElementById('no-results');
+        const count  = document.getElementById('count');
+
+        if (lista.length === 0) {
+            grid.innerHTML = '';
+            noRes.style.display = 'block';
+            count.textContent = '0';
+        } else {
+            noRes.style.display = 'none';
+            grid.innerHTML = lista.map((a, i) => renderCard(a, i)).join('');
+            count.textContent = lista.length;
+        }
+    }
+
+    // ── Filtros ──────────────────────────────────────────
+    let catActiva = 'todos';
+    let query = '';
+
+    function filtrar() {
+        return ARTICULOS.filter(a => {
+            const porCat   = catActiva === 'todos' || a.categoria === catActiva;
+            const porQuery = query === '' ||
+                a.titulo.toLowerCase().includes(query) ||
+                a.resumen.toLowerCase().includes(query);
+            return porCat && porQuery;
+        });
+    }
+
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            catActiva = btn.dataset.cat;
+            render(filtrar());
+        });
+    });
+
+    document.getElementById('search-input').addEventListener('input', e => {
+        query = e.target.value.toLowerCase().trim();
+        render(filtrar());
+    });
+
+    render(ARTICULOS);
+
+    // ── Cursor ───────────────────────────────────────────
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function animCursor() {
+        dot.style.left  = mx + 'px';
+        dot.style.top   = my + 'px';
+        rx += (mx - rx) * 0.12;
+        ry += (my - ry) * 0.12;
+        ring.style.left = rx + 'px';
+        ring.style.top  = ry + 'px';
+        requestAnimationFrame(animCursor);
+    })();
+
+    // ── Theme toggle ─────────────────────────────────────
+    const html   = document.documentElement;
+    const toggle = document.getElementById('theme-toggle');
+    const stored = localStorage.getItem('ib-theme') || 'light';
+    html.setAttribute('data-theme', stored);
+    toggle.textContent = stored === 'dark' ? '☀ Claro' : '☾ Oscuro';
+    toggle.addEventListener('click', () => {
+        const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('ib-theme', next);
+        toggle.textContent = next === 'dark' ? '☀ Claro' : '☾ Oscuro';
+    });
+
+    // ── Mobile nav ───────────────────────────────────────
+    document.getElementById('nav-toggle').addEventListener('click', () => {
+        document.getElementById('nav-menu').classList.toggle('open');
+    });
+
+    // ── Page transitions ──────────────────────────────────
+    const overlay = document.getElementById('page-transition');
+    document.querySelectorAll('a[href]').forEach(link => {
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('mailto') || href.startsWith('http')) return;
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            overlay.style.transition = 'transform 0.35s cubic-bezier(0.76,0,0.24,1)';
+            overlay.style.transformOrigin = 'left';
+            overlay.style.transform = 'scaleX(1)';
+            setTimeout(() => { window.location.href = href; }, 360);
+        });
+    });
+    window.addEventListener('pageshow', () => {
+        overlay.style.transition = 'none';
+        overlay.style.transformOrigin = 'right';
+        overlay.style.transform = 'scaleX(1)';
+        requestAnimationFrame(() => {
+            overlay.style.transition = 'transform 0.35s cubic-bezier(0.76,0,0.24,1)';
+            overlay.style.transform = 'scaleX(0)';
+        });
+    });
+    </script>
+
+</body>
+</html>
