@@ -597,11 +597,14 @@
                             Plataforma digital de salud y acompañamiento para personas en recuperación
                             de consumos problemáticos. Registro de avances, rutinas y hábitos.
                         </p>
-                        <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0;">
+                        <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0; margin-bottom:20px;">
                             <li>→ Registro diario de estado y avances</li>
                             <li>→ Organización de rutinas y hábitos</li>
                             <li>→ Seguimiento clínico estructurado</li>
                         </ul>
+                        <a href="recovery-os.html" class="nav-go mono" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); text-decoration:none; border:1px solid var(--border); padding:6px 16px; transition:all .2s; display:inline-block;"
+                           onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'"
+                           onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">Ver proyecto →</a>
                     </div>
                     <div class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2; text-align:right; flex-shrink:0;">
                         <div>STACK: Python / FastAPI</div>
@@ -623,11 +626,14 @@
                             Herramientas cognitivas basadas en Anthropic / Claude. Asistentes, flujos
                             y pipelines para procesos editoriales, clínicos y de negocio.
                         </p>
-                        <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0;">
+                        <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0; margin-bottom:20px;">
                             <li>→ Agentes de escritura y edición</li>
                             <li>→ Automatización con Claude API</li>
                             <li>→ Asistentes personalizados por sector</li>
                         </ul>
+                        <a href="ia-aplicada.html" class="nav-go mono" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); text-decoration:none; border:1px solid var(--border); padding:6px 16px; transition:all .2s; display:inline-block;"
+                           onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'"
+                           onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">Ver proyecto →</a>
                     </div>
                     <div class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2; text-align:right; flex-shrink:0;">
                         <div>STACK: Claude / Anthropic API</div>
@@ -649,11 +655,14 @@
                             Sistema de construcción y operación de agencias remotas para
                             el viajero nómade digital. Infraestructura, marca y captación global.
                         </p>
-                        <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0;">
+                        <ul class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2.2; list-style:none; padding:0; margin-bottom:20px;">
                             <li>→ Estructura operativa remota</li>
                             <li>→ Branding y posicionamiento digital</li>
                             <li>→ Captación de clientes globales</li>
                         </ul>
+                        <a href="nomade.html" class="nav-go mono" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); text-decoration:none; border:1px solid var(--border); padding:6px 16px; transition:all .2s; display:inline-block;"
+                           onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'"
+                           onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">Ver proyecto →</a>
                     </div>
                     <div class="mono" style="font-size:9px; color:var(--text-subtle); line-height:2; text-align:right; flex-shrink:0;">
                         <div>STACK: No-code + IA</div>
@@ -921,6 +930,10 @@ const CMDS = {
 <div><span class="tr">quienes</span>     → sobre el estudio</div>
 <div><span class="tr">contacto</span>    → cómo comunicarse</div>
 <div><span class="tr">articulos</span>   → ir a artículos</div>
+<div><span class="tr">literatura</span>  → escritura y edición</div>
+<div><span class="tr">recovery</span>    → plataforma Recovery OS</div>
+<div><span class="tr">ia</span>          → IA Aplicada</div>
+<div><span class="tr">nomade</span>      → Nómade Agency</div>
 <div><span class="tr">stack</span>       → tecnologías usadas</div>
 <div><span class="tr">clear</span>       → limpiar pantalla</div>
 <div>&nbsp;</div>`,
@@ -959,6 +972,10 @@ const CMDS = {
 <div>&nbsp;</div>`,
 
     articulos: () => { setTimeout(() => goTo('articulos.html'), 500); return `<div class="td">→ Navegando a artículos...</div><div>&nbsp;</div>`; },
+    literatura: () => { setTimeout(() => goTo('literatura.html'), 500); return `<div class="td">→ Navegando a Escritura y Edición...</div><div>&nbsp;</div>`; },
+    recovery:   () => { setTimeout(() => goTo('recovery-os.html'), 500); return `<div class="td">→ Navegando a Recovery OS...</div><div>&nbsp;</div>`; },
+    ia:         () => { setTimeout(() => goTo('ia-aplicada.html'), 500); return `<div class="td">→ Navegando a IA Aplicada...</div><div>&nbsp;</div>`; },
+    nomade:     () => { setTimeout(() => goTo('nomade.html'), 500); return `<div class="td">→ Navegando a Nómade Agency...</div><div>&nbsp;</div>`; },
 
     stack: () => `
 <div class="tr">// Stack tecnológico</div>
